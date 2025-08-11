@@ -42,3 +42,6 @@
 
 # Visual Studio Code settings
 .vscode/
+
+# Clangd
+.clangd
