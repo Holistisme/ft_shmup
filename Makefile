@@ -6,7 +6,7 @@
 #    By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/11 14:31:53 by aheitz            #+#    #+#              #
-#    Updated: 2025/08/11 14:43:25 by aheitz           ###   ########.fr        #
+#    Updated: 2025/08/11 17:26:37 by aheitz           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,9 @@ SRC_DIR = src
 INC_DIR = include
 OBJ_DIR = obj
 
-SRC = $(SRC_DIR)/main.cpp
+SRC = $(SRC_DIR)/main.cpp            \
+	$(SRC_DIR)/gameplay/gameplay.cpp \
+
 OBJ = $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 DEP = $(OBJ:.o=.d)
 
@@ -30,7 +32,7 @@ $(NAME): $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	@mkdir -p $(OBJ_DIR)
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -I$(INC_DIR) -c $< -o $@
 
 clean:
