@@ -6,7 +6,7 @@
 /*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:15:41 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/12 15:04:02 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/12 16:41:17 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 /* ************************************************************************** */
 
 #define ENEMY_DELTA          200
-#define ENEMY_SPAWN_INTERVAL 200
+#define ENEMY_SPAWN_INTERVAL 500
 
 #define SHOOT_COOLDOWN  250
 
@@ -45,12 +45,14 @@ struct Game {
     int score, lives, timeMs;
 
     int enemyDelta, enemySpawnInterval;
+    int obstacleDelta, obstacleSpawnInterval;
     int bulletDelta, bulletCooldown;
     int shootCooldown;
 
     Entity player;
     std::vector<Entity> enemies;
     std::vector<Entity> bullets;
+    std::vector<Entity> obstacles;
     std::vector<Entity> views;
 
     /**
