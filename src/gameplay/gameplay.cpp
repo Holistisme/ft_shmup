@@ -6,11 +6,12 @@
 /*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:14:40 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/12 15:21:48 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/12 16:58:03 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/gameplay/gameplay.hpp"
+#include "../../include/gameplay/obstacle.hpp"
 
 /* ************************************************************************** */
 
@@ -46,6 +47,9 @@ Game initGameplay(void) {
     game.bullets.clear();
     game.views  .clear();
 
+    game.obstacleDelta         = OBSTACLE_DELTA;
+    game.obstacleSpawnInterval = OBSTACLE_SPAWN_INTERVAL;
+
     game.player = {EntityKind::Player, Vector2D{COLS / 2, LINES - 3}, 100};
     game.pushView(game.player);
 
@@ -71,6 +75,11 @@ void clearOutOfBoundsEntities(Game &game) {
         [&](const Entity &entity) {
             return outOfBounds(entity) || entity.health <= 0;
         }), game.bullets.end());
+
+    game.obstacles.erase(remove_if(game.obstacles.begin(), game.obstacles.end(),
+        [&](const Entity &entity) {
+            return outOfBounds(entity) || entity.health <= 0;
+        }), game.obstacles.end());
 };
 
 /* ************************************************************************** */
@@ -113,8 +122,22 @@ void moveEnemies(Game &game, const int delta) {
 
     if (game.enemyDelta <= 0) {
         for (auto &enemy : game.enemies) {
-            enemy.position.y++;
-            if (enemy.position.y < game.player.position.y) {
+            if (!obstacleOnXY(game, Vector2D{enemy.position.x, enemy.position.y + 1})) {
+                enemy.position.y++;
+            };
+            if (obstacleComingOnY(game, enemy.position.y)) {
+                if (!obstacleComingOnXY(game, enemy.position.x - 1, enemy.position.y)) {
+                    enemy.position.x--;
+                } else if (!obstacleComingOnXY(game, enemy.position.x + 1, enemy.position.y)) {
+                    enemy.position.x++;
+                } else {
+                    if (uniform_int_distribution<>(0, 1)(game.rng) == 0) {
+                        enemy.position.x--;
+                    } else {
+                        enemy.position.x++;
+                    };
+                };
+            } else if (enemy.position.y < game.player.position.y) {
                 if (game.player.position.x > enemy.position.x && !enemyOnX(game, enemy.position.x + 1) && !bulletOnWay(game, enemy, enemy.position.x + 1)) {
                     enemy.position.x++;
                 } else if (game.player.position.x < enemy.position.x && !enemyOnX(game, enemy.position.x - 1) && !bulletOnWay(game, enemy, enemy.position.x - 1)) {
@@ -122,7 +145,7 @@ void moveEnemies(Game &game, const int delta) {
                 };
             };
         };
-        game.enemyDelta = ENEMY_DELTA;
+        game.enemyDelta = max(50, ENEMY_DELTA - game.timeMs / 2000);
     };
 };
 
@@ -169,6 +192,12 @@ void hitEntities(Game &game) {
                 bullet.health  = 0;
                 enemy.health   = 0;
                 game.score     += 1;
+            };
+        };
+
+        for (auto &obstacle : game.obstacles) {
+            if (bullet.position == obstacle.position) {
+                bullet.health = 0;
             };
         };
     };
@@ -235,6 +264,9 @@ void updateGameplay(Game &game, const int deltaTime, const unsigned input) {
     hitEntities(game);
     enemyDamage(game);
 
+    spawnObstacle(game, deltaTime);
+    moveObstacles(game, deltaTime);
+
     game.views.clear();
     game.views.reserve(1 + game.enemies.size() + game.bullets.size());
     game.pushView(game.player);
@@ -243,6 +275,9 @@ void updateGameplay(Game &game, const int deltaTime, const unsigned input) {
     };
     for (const auto &bullet : game.bullets) {
         game.pushView(bullet);
+    };
+    for (const auto &obstacle : game.obstacles) {
+        game.pushView(obstacle);
     };
 };
 

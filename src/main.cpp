@@ -6,7 +6,7 @@
 /*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:34:57 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/12 15:27:13 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/12 17:02:18 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,9 @@ void	init_display(void)
 	keypad(stdscr, TRUE);
 	start_color();
 	init_pair(1, COLOR_RED, COLOR_BLACK);
-	init_pair(2, COLOR_BLUE, COLOR_BLACK);
+	init_pair(2, COLOR_BLUE, COLOR_RED);
 	init_pair(3, COLOR_GREEN, COLOR_BLACK); // carré vert
+    init_pair(4, COLOR_WHITE, COLOR_BLACK);
 	std::srand(std::time(nullptr));
 
     nodelay(stdscr, TRUE);
@@ -104,6 +105,7 @@ bool	display(void)
                 case EntityKind::Player:       cp = 1; break;
                 case EntityKind::Enemy:        cp = 2; break;
                 case EntityKind::BulletPlayer: cp = 3; break;
+                case EntityKind::Obstacle:     cp = 4; break;
                 default: break;
             };
             if (cp) attron(COLOR_PAIR(cp));
