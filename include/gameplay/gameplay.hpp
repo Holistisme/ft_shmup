@@ -6,7 +6,7 @@
 /*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:15:41 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/11 17:21:41 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/12 10:30:05 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,59 @@
 #include "./types.hpp"
 
 #include <algorithm>
+#include <random>
 #include <vector>
+
+/* ************************************************************************** */
+
+#define ENEMY_DELTA          200
+#define ENEMY_SPAWN_INTERVAL 200
+
+#define BULLET_DELTA    50
+#define BULLET_COOLDOWN 500
+
+#define ENEMY_COUNT_MAX 50
+
+/* ************************************************************************** */
+
+/**
+ * @brief Represents the game state and logic.
+ *
+ */
+struct Game {
+    int Width, Height;
+
+    std::mt19937 rng;
+
+    int score, lives, timeMs;
+
+    int enemyDelta, enemySpawnInterval;
+    int bulletDelta, bulletCooldown;
+
+    Entity player;
+    std::vector<Entity> enemies;
+    std::vector<Entity> bullets;
+    std::vector<Entity> views;
+
+    /**
+     * @brief Checks if a position is within the game bounds.
+     *
+     * @param pos The position to check.
+     * @return true if the position is within bounds, false otherwise.
+     */
+    bool inBounds(const Vector2D &pos) {
+        return pos.x >= 0 && pos.x < Width && pos.y >= 0 && pos.y < Height;
+    };
+
+    /**
+     * @brief Pushes an entity to the views vector.
+     *
+     * @param entity The entity to push.
+     */
+    void pushView(const Entity &entity) {
+        views.push_back(entity);
+    };
+};
 
 /* ************************************************************************** */
 
@@ -35,11 +87,13 @@ enum : unsigned {
 
 /* ************************************************************************** */
 
-void initGameplay  (const int width,     const int      height);
-void updateGameplay(const int deltaTime, const unsigned input);
+Game initGameplay  (const int width,     const int      height);
+void updateGameplay(Game &game, const int deltaTime, const unsigned input);
 
-int getScore(void);
-int getLives(void);
-int getTime (void);
+int getScore(const Game &game);
+int getLives(const Game &game);
+int getTime (const Game &game);
 
-const std::vector<Entity> &getViews(void);
+const std::vector<Entity> &getViews(const Game &game);
+
+/* ************************************************************************** */

@@ -6,7 +6,7 @@
 #    By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/11 14:31:53 by aheitz            #+#    #+#              #
-#    Updated: 2025/08/11 17:26:37 by aheitz           ###   ########.fr        #
+#    Updated: 2025/08/12 10:50:37 by aheitz           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,7 @@ OBJ_DIR = obj
 
 SRC = $(SRC_DIR)/main.cpp            \
 	$(SRC_DIR)/gameplay/gameplay.cpp \
+	$(SRC_DIR)/render/render.cpp     \
 
 OBJ = $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 DEP = $(OBJ:.o=.d)
