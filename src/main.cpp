@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
+/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:34:57 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/11 19:25:25 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/12 11:10:06 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/gameplay/gameplay.hpp"
+#include "../include/render/render.hpp"
 #include "../include/defines.hpp"
 
 // Temporary includes for testing
@@ -37,110 +38,80 @@ void	init_display(void)
 	init_pair(2, COLOR_BLUE, COLOR_BLACK);
 	init_pair(3, COLOR_GREEN, COLOR_BLACK); // carré vert
 	std::srand(std::time(nullptr));
-	timeout(DEFAULT_GETCH_DELAY); // getch() attend 50ms max
+
+    nodelay(stdscr, TRUE);
+	timeout(0);
 }
+
+//TODO: Did some things here, but not my work, please refactor this.
+#include <thread>
 
 bool	display(void)
 {
-	int x = COLS / 2, y = LINES / 2;
-    int ch;
 	auto last_scroll = std::chrono::steady_clock::now();
 	int scroll_interval = DEFAULT_SCROLL_INTERVAL; // ms
-	
+
     // Initialisation du motif des bords
     const int bord_height = LINES;
     char bord_pattern[bord_height];
     for (int i = 0; i < bord_height; ++i)
 	bord_pattern[i] = (i % 2 == 0) ? '\\' : '/';
-	
-    // Vecteur pour stocker les positions des carrés bleus
-    std::vector<std::pair<int, int>> blue_squares;
-    auto last_blue_gen = std::chrono::steady_clock::now();
-    int blue_gen_interval = DEFAULT_ENEMY_SPAWN_INTERVAL; // ms
-	
-    // Vecteur pour stocker les tirs verts
-    std::vector<std::pair<int, int>> green_shots;
-    auto last_shot = std::chrono::steady_clock::now();
-    int shot_delay = DEFAULT_SHOT_DELAY; // ms
-    int green_move_interval = DEFAULT_BULLET_SPEED; // ms (vitesse des tirs verts)
-    auto last_green_move = std::chrono::steady_clock::now();
-	
-	while (true){
+
+    Game game = initGameplay(COLS, LINES - 1);
+    bool running = true;
+    auto prev_frame = std::chrono::steady_clock::now();
+	while (running) {
+        auto now = std::chrono::steady_clock::now();
+        int delta = (int)std::chrono::duration_cast<std::chrono::milliseconds>(now - prev_frame).count();
+        if (delta < 0)   delta = 0;
+        if (delta > 50)  delta = 50;
+        prev_frame = now;
+
+        unsigned input = 0;
+        int ch;
+        while ((ch = getch()) != ERR) {
+            switch (ch) {
+                case 'q': running = false; break;
+                case 'w': case KEY_UP:    input |= INPUT_W;     break;
+                case 's': case KEY_DOWN:  input |= INPUT_S;     break;
+                case 'a': case KEY_LEFT:  input |= INPUT_A;     break;
+                case 'd': case KEY_RIGHT: input |= INPUT_D;     break;
+                case ' ':                 input |= INPUT_SPACE; break;
+                default: break;
+            }
+        }
+        if (!running) break;
+
+        updateGameplay(game, delta, input);
+
         clear();
+        drawHud(game);
+        const auto& vs = getViews(game);
+        for (const auto& e : vs) {
+            int x = e.position.x;
+            int y = e.position.y + 1;
+            if (x < 0 || x >= COLS || y < 1 || y >= LINES) continue;
+
+            short cp = 0;
+            switch (e.kind) {
+                case EntityKind::Player:       cp = 1; break;
+                case EntityKind::Enemy:        cp = 2; break;
+                case EntityKind::BulletPlayer: cp = 3; break;
+                default: break;
+            };
+            if (cp) attron(COLOR_PAIR(cp));
+            mvaddch(y, x, ' ' | A_REVERSE);
+            if (cp) attroff(COLOR_PAIR(cp));
+        };
+
         // [AFFICHAGE] Affiche les bords verticaux
         for (int i = 0; i < LINES; ++i) {
             mvaddch(i, 0, bord_pattern[i % bord_height]); // [AFFICHAGE] Bord gauche
             mvaddch(i, COLS - 1, bord_pattern[i % bord_height]); // [AFFICHAGE] Bord droit
         }
-        // [AFFICHAGE] Affiche les carrés bleus
-        
-		attron(COLOR_PAIR(2));
-        for (auto& sq : blue_squares) {
-            if (sq.second >= 0 && sq.second < LINES && sq.first > 0 && sq.first < COLS - 1)
-                mvaddch(sq.second, sq.first, ' ' | A_REVERSE); // [AFFICHAGE] Carré bleu
-        }
-        attroff(COLOR_PAIR(2));
 
-        // [AFFICHAGE] Affiche les tirs verts
-        attron(COLOR_PAIR(3));
-        for (auto& shot : green_shots) {
-            if (shot.second >= 0 && shot.second < LINES && shot.first > 0 && shot.first < COLS - 1)
-                mvaddch(shot.second, shot.first, ' ' | A_REVERSE); // [AFFICHAGE] Tir vert
-        }
-        attroff(COLOR_PAIR(3));
-		
-        // [AFFICHAGE] Affiche le carré rouge
-        attron(COLOR_PAIR(1));
-        mvaddch(y, x, ' ' | A_REVERSE); // [AFFICHAGE] Carré rouge
-        attroff(COLOR_PAIR(1));
         refresh();
 
-        ch = getch();
-        if (ch == 'q') return true;
-        // Déplacement du Joueur1 avec WASD
-        if (ch == 'w') updateGameplay(MAGIC_NUMBER_DELTA_TIME, INPUT_W);
-        if (ch == 's') updateGameplay(MAGIC_NUMBER_DELTA_TIME, INPUT_S);
-        if (ch == 'a') updateGameplay(MAGIC_NUMBER_DELTA_TIME, INPUT_A);
-        if (ch == 'd') updateGameplay(MAGIC_NUMBER_DELTA_TIME, INPUT_D);
-
-        // Tir vers le haut avec espace
-        auto now = std::chrono::steady_clock::now();
-        if (ch == ' ' && std::chrono::duration_cast<std::chrono::milliseconds>(now - last_shot).count() > shot_delay) {
-            green_shots.push_back({x, y - 1});
-            last_shot = now;
-        }
-
-        // GAME OVER si le carré sort de l'écran
-        // if (x <= 0 || x >= COLS - 1 || y < 0 || y >= LINES) {
-        //     attron(A_BOLD);
-        //     while (1)
-        //     {
-        //         clear();
-        //         mvprintw(LINES / 2, (COLS - 9) / 2, "GAME OVER");
-        //         if (getch() == 'q')
-        //             break;
-        //     }
-        //     attroff(A_BOLD);
-        //     refresh();
-        //     break;
-        // }
-
-
-        // Déplacement des tirs verts à leur propre rythme
-        if (std::chrono::duration_cast<std::chrono::milliseconds>(now - last_green_move).count() > green_move_interval) {
-            for (auto& shot : green_shots) {
-                shot.second--;
-            }
-            // Supprime les tirs verts hors écran
-            green_shots.erase(
-                std::remove_if(green_shots.begin(), green_shots.end(), [](const std::pair<int,int>& shot) {
-                    return shot.second < 0;
-                }),
-                green_shots.end()
-            );
-            last_green_move = now;
-        }
-		
 		if (std::chrono::duration_cast<std::chrono::milliseconds>(now - last_scroll).count() > scroll_interval) {
             // Décale le motif vers le bas
             char last = bord_pattern[bord_height - 1];
@@ -148,26 +119,11 @@ bool	display(void)
                 bord_pattern[i] = bord_pattern[i - 1];
             bord_pattern[0] = last;
             last_scroll = now;
-            // Déplace les carrés bleus vers le bas
-            for (auto& sq : blue_squares) {
-                sq.second++;
-            }
-            // Supprime les carrés bleus hors écran
-            blue_squares.erase(
-                std::remove_if(blue_squares.begin(), blue_squares.end(), [](const std::pair<int,int>& sq) {
-                    return sq.second >= LINES;
-                }),
-                blue_squares.end()
-            );
-            
-            // (Suppression déjà gérée dans le timer des tirs verts)
         }
-        // Génération aléatoire de nouveaux carrés bleus
-        if (std::chrono::duration_cast<std::chrono::milliseconds>(now - last_blue_gen).count() > blue_gen_interval) {
-            int bx = 1 + std::rand() % (COLS - 2);
-            blue_squares.push_back({bx, 0});
-            last_blue_gen = now;
-        }
+
+        auto end = std::chrono::steady_clock::now();
+        int used = (int)std::chrono::duration_cast<std::chrono::milliseconds>(end - now).count();
+        if (used < 16) std::this_thread::sleep_for(std::chrono::milliseconds(16 - used));
     }
 	return (false);
 }
@@ -177,37 +133,10 @@ bool	display(void)
  *
  * @return int Returns 0 on successful execution
  */
-int	main(int argc, char **argv)
+int	main(void)
 {
-	// unsigned int width = DEFAULT_WIDTH;
-	// unsigned int height = DEFAULT_HEIGHT;
-
-	bool endGame = false;
-
-	(void)argc;
-	(void)argv;
-	// if (argv[1] && argv[2])
-	// {
-	// 	width = std::atoi(argv[1]);
-	// 	height = std::atoi(argv[2]);
-	// }
-	int x = COLS / 2, y = LINES / 2;
-    initGameplay(x, y);
 	init_display();
-	
-    // while (!endGame)
-	// {
-		endGame = display();
-        // const int keys[]  = {INPUT_W, INPUT_A, INPUT_S, INPUT_D, INPUT_SPACE};
-        // const int randKey = keys[rand() % 5];
-
-        // updateGameplay(42, randKey);
-        // printf("Random key pressed: %d\n", randKey);
-        // printf("Score: %d, Lives: %d, Time: %d\n", getScore(), getLives(), getTime());
-
-        // const auto &views = getViews();
-        // printf("Entities in view: %zu\n", views.size());
-    // };
+	display();
 	endwin();
     return (0);
 };
