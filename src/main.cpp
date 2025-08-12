@@ -6,7 +6,7 @@
 /*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:34:57 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/12 14:16:27 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/12 15:09:59 by benpicar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,39 @@ bool	display(void)
 	return (false);
 }
 
+static inline void	Display_menu(void)
+{
+	int ch;
+	std::string title = "FT_SHMUP";
+	std::string opt1 = "1 Player";
+	std::string opt2 = "2 Players";
+	nodelay(stdscr, FALSE);
+	while (true)
+	{
+        clear();
+        mvprintw(LINES / 2 - 2, (COLS - title.size()) / 2, "%s", title.c_str());
+        mvprintw(LINES / 2, (COLS - opt1.size()) / 2, "%s", opt1.c_str());
+        mvprintw(LINES / 2 + 1, (COLS - opt2.size()) / 2, "%s", opt2.c_str());
+        mvprintw(LINES / 2 + 3, (COLS - 30) / 2, "Appuyez sur 1 ou 2 pour commencer");
+        refresh();
+		
+        ch = getch();
+		mvprintw(0, 0, "ch = %d", ch);
+        if (ch == '1' || ch == '2')
+			break;
+		if (ch == 'q')
+		{
+			endwin();
+			exit(0);
+		}
+    }
+	nodelay(stdscr, TRUE);
+	if (ch == '1' || ch == '2')
+	{
+		display();
+	}
+}
+
 /**
  * @brief Main entry point of the program
  *
@@ -138,25 +171,8 @@ int	main(void)
     init_display();
 
     // Menu principal
-    while (true) {
-        clear();
-        std::string title = "FT_SHMUP";
-        std::string opt1 = "1 Player";
-        std::string opt2 = "2 Players";
-        mvprintw(LINES / 2 - 2, (COLS - title.size()) / 2, "%s", title.c_str());
-        mvprintw(LINES / 2, (COLS - opt1.size()) / 2, "%s", opt1.c_str());
-        mvprintw(LINES / 2 + 1, (COLS - opt2.size()) / 2, "%s", opt2.c_str());
-        mvprintw(LINES / 2 + 3, (COLS - 30) / 2, "Appuyez sur 1 ou 2 pour commencer");
-        refresh();
-        int ch = getch();
-        if (ch == '1' || ch == '2') break;
-		if (ch == 'q') {
-			endwin();
-			return (0);
-		}
-    }
+    Display_menu();
 
-    display();
     endwin();
     return (0);
 }
