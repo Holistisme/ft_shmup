@@ -6,7 +6,7 @@
 /*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:14:40 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/12 10:37:30 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/12 15:21:48 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,8 @@ using namespace std;
  * @param height The height of the game area.
  * @return Game The initialized game state.
  */
-Game initGameplay(const int width, const int height) {
+Game initGameplay(void) {
     Game game;
-
-    game.Width  = width;
-    game.Height = height;
 
     game.rng = std::mt19937(std::random_device{}());
 
@@ -41,6 +38,7 @@ Game initGameplay(const int width, const int height) {
 
     game.enemyDelta         = ENEMY_DELTA;
     game.enemySpawnInterval = ENEMY_SPAWN_INTERVAL;
+    game.shootCooldown      = SHOOT_COOLDOWN;
     game.bulletDelta        = BULLET_DELTA;
     game.bulletCooldown     = BULLET_COOLDOWN;
 
@@ -48,7 +46,7 @@ Game initGameplay(const int width, const int height) {
     game.bullets.clear();
     game.views  .clear();
 
-    game.player = {EntityKind::Player, Vector2D{game.Width / 2, game.Height / 2}, 100};
+    game.player = {EntityKind::Player, Vector2D{COLS / 2, LINES - 3}, 100};
     game.pushView(game.player);
 
     return game;
@@ -77,6 +75,20 @@ void clearOutOfBoundsEntities(Game &game) {
 
 /* ************************************************************************** */
 
+void enemyDamage(Game &game) {
+    for (auto &enemy : game.enemies) {
+        if (enemy.position == game.player.position) {
+            --game.lives;
+            enemy.health = 0;
+        };
+    };
+};
+
+bool bulletOnWay(const Game &game, const Entity &enemy, const int x) {
+    return any_of(game.bullets.begin(), game.bullets.end(),
+        [&](const Entity &bullet) { return bullet.position.x == x && bullet.position.y < enemy.position.y;});
+};
+
 /**
  * @brief Check if there is an enemy on the specified X coordinate.
  *
@@ -87,7 +99,7 @@ void clearOutOfBoundsEntities(Game &game) {
  */
 bool enemyOnX(const Game &game, const int x) {
     return any_of(game.enemies.begin(), game.enemies.end(),
-        [&](const Entity &enemy) { return enemy.position.x == x; });
+        [&](const Entity &enemy) { return enemy.position.x == x && enemy.position.y < game.player.position.y; });
 };
 
 /**
@@ -102,10 +114,12 @@ void moveEnemies(Game &game, const int delta) {
     if (game.enemyDelta <= 0) {
         for (auto &enemy : game.enemies) {
             enemy.position.y++;
-            if (game.player.position.x > enemy.position.x && !enemyOnX(game, enemy.position.x + 1)) {
-                enemy.position.x++;
-            } else if (game.player.position.x < enemy.position.x && !enemyOnX(game, enemy.position.x - 1)) {
-                enemy.position.x--;
+            if (enemy.position.y < game.player.position.y) {
+                if (game.player.position.x > enemy.position.x && !enemyOnX(game, enemy.position.x + 1) && !bulletOnWay(game, enemy, enemy.position.x + 1)) {
+                    enemy.position.x++;
+                } else if (game.player.position.x < enemy.position.x && !enemyOnX(game, enemy.position.x - 1) && !bulletOnWay(game, enemy, enemy.position.x - 1)) {
+                    enemy.position.x--;
+                };
             };
         };
         game.enemyDelta = ENEMY_DELTA;
@@ -118,11 +132,11 @@ void moveEnemies(Game &game, const int delta) {
  * @param game The current game state.
  */
 void spawnEnemy(Game &game) {
-    if ((int)game.enemies.size() >= ENEMY_COUNT_MAX || game.Width <= 0 || game.Height <= 0) {
+    if ((int)game.enemies.size() >= ENEMY_COUNT_MAX || COLS <= 0 || LINES <= 0) {
         return;
     };
 
-    uniform_int_distribution<int> randX(0, max(0, game.Width - 1));
+    uniform_int_distribution<int> randX(0, max(0, COLS - 1));
     game.enemies.push_back({EntityKind::Enemy, Vector2D{randX(game.rng), 1}, 1});
 };
 
@@ -184,7 +198,11 @@ void moveBullets(Game &game, const int delta) {
  * @param position The position to shoot the bullet from.
  */
 void shootBullet(Game &game, const Vector2D &position) {
-    game.bullets.push_back({EntityKind::BulletPlayer, position, 1});
+    if (game.shootCooldown <= 0) {
+        const Vector2D shootPos = {position.x, position.y - 1};
+        game.bullets.push_back({EntityKind::BulletPlayer, shootPos, 1});
+        game.shootCooldown = SHOOT_COOLDOWN;
+    };
 };
 
 /* ************************************************************************** */
@@ -197,22 +215,25 @@ void shootBullet(Game &game, const Vector2D &position) {
  * @param input The current player input.
  */
 void updateGameplay(Game &game, const int deltaTime, const unsigned input) {
-    game.timeMs += deltaTime;
+    game.timeMs        += deltaTime;
+    game.shootCooldown -= deltaTime;
 
     if (input & INPUT_W)        game.player.position.y -= 1;
     if (input & INPUT_S)        game.player.position.y += 1;
     if (input & INPUT_A)        game.player.position.x -= 1;
     if (input & INPUT_D)        game.player.position.x += 1;
+
     if (input & INPUT_SPACE)    shootBullet(game, game.player.position);
 
-    game.player.position.x = clamp(game.player.position.x, 0, game.Width  - 1);
-    game.player.position.y = clamp(game.player.position.y, 0, game.Height - 1);
+    game.player.position.x = clamp(game.player.position.x, 1, COLS - 2);
+    game.player.position.y = clamp(game.player.position.y, 0, LINES - 2);
 
     clearOutOfBoundsEntities(game);
     handleEnemySpawn(game, deltaTime);
     moveEnemies(game, deltaTime);
     moveBullets(game, deltaTime);
     hitEntities(game);
+    enemyDamage(game);
 
     game.views.clear();
     game.views.reserve(1 + game.enemies.size() + game.bullets.size());

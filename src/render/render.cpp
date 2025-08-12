@@ -6,7 +6,7 @@
 /*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 07:43:13 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/12 10:33:41 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/12 15:22:02 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,12 @@ int drawHud(const Game &game) {
     const int centiseconds = (timeMs % 1000) / 10;
 
     mvhline(0, 0, ' ', COLS);
-    mvprintw(0, 0, "Score:%04d  Lives:%d  Time:%02d.%02ds", getScore(game), getLives(game), clampTime(seconds, 0, 5999), clampTime(centiseconds, 0, 99));
+
+    char display[64] = {0};
+    snprintf(display, sizeof(display), "Score: %04d  Lives: %d  Time: %02d.%02ds",
+        getScore(game), getLives(game), clampTime(seconds, 0, 5999), clampTime(centiseconds, 0, 99));
+
+    mvprintw(0, COLS / 2 - strlen(display) / 2, "%s", display);
     return EXIT_SUCCESS;
 };
 
