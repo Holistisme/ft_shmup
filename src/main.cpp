@@ -6,7 +6,7 @@
 /*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:34:57 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/12 15:09:59 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/12 15:18:27 by benpicar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+
+static inline void	showGameOverScreen(int score, double elapsed_seconds);
 
 void	init_display(void)
 {
@@ -60,7 +62,8 @@ bool	display(void)
     Game game = initGameplay(COLS, LINES - 1);
     bool running = true;
     auto prev_frame = std::chrono::steady_clock::now();
-	while (running) {
+	while (running)
+	{
         auto now = std::chrono::steady_clock::now();
         int delta = (int)std::chrono::duration_cast<std::chrono::milliseconds>(now - prev_frame).count();
         if (delta < 0)   delta = 0;
@@ -125,6 +128,10 @@ bool	display(void)
         int used = (int)std::chrono::duration_cast<std::chrono::milliseconds>(end - now).count();
         if (used < 16) std::this_thread::sleep_for(std::chrono::milliseconds(16 - used));
     }
+	if (game.lives <= 0)
+	{
+		showGameOverScreen(game.score, game.timeMs / 1000.0);
+	}
 	return (false);
 }
 
@@ -159,6 +166,36 @@ static inline void	Display_menu(void)
 	{
 		display();
 	}
+}
+
+static inline void	showGameOverScreen(int score, double elapsed_seconds)
+{
+	std::string	title = "GAME OVER";
+	std::string	score_str = "Score : " + std::to_string(score);
+	char		time_buf[64];
+	snprintf(time_buf, sizeof(time_buf), "Temps : %.2f s", elapsed_seconds);
+	std::string	time_str = time_buf;
+	int			ch;
+	nodelay(stdscr, FALSE);
+	while (true)
+	{
+		clear();
+		mvprintw(LINES / 2 - 2, (COLS - title.size()) / 2, "%s", title.c_str());
+		mvprintw(LINES / 2, (COLS - score_str.size()) / 2, "%s", score_str.c_str());
+		mvprintw(LINES / 2 + 1, (COLS - time_str.size()) / 2, "%s", time_str.c_str());
+		mvprintw(LINES / 2 + 3, (COLS - 30) / 2, "Appuyez sur une touche pour quitter");
+		refresh();
+		ch = getch();
+		if (ch != 'q' && ch != 410)
+			break;
+		else if (ch == 'q')
+		{
+			endwin();
+			exit(0);
+		}
+	}
+	nodelay(stdscr, TRUE);
+	Display_menu();
 }
 
 /**
