@@ -6,7 +6,7 @@
 /*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:15:41 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/12 10:30:05 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/12 15:04:02 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "./types.hpp"
 
 #include <algorithm>
+#include <ncurses.h>
 #include <random>
 #include <vector>
 
@@ -24,6 +25,8 @@
 
 #define ENEMY_DELTA          200
 #define ENEMY_SPAWN_INTERVAL 200
+
+#define SHOOT_COOLDOWN  250
 
 #define BULLET_DELTA    50
 #define BULLET_COOLDOWN 500
@@ -37,14 +40,13 @@
  *
  */
 struct Game {
-    int Width, Height;
-
     std::mt19937 rng;
 
     int score, lives, timeMs;
 
     int enemyDelta, enemySpawnInterval;
     int bulletDelta, bulletCooldown;
+    int shootCooldown;
 
     Entity player;
     std::vector<Entity> enemies;
@@ -58,7 +60,7 @@ struct Game {
      * @return true if the position is within bounds, false otherwise.
      */
     bool inBounds(const Vector2D &pos) {
-        return pos.x >= 0 && pos.x < Width && pos.y >= 0 && pos.y < Height;
+        return pos.x >= 0 && pos.x < COLS && pos.y >= 0 && pos.y < LINES;
     };
 
     /**
@@ -87,7 +89,7 @@ enum : unsigned {
 
 /* ************************************************************************** */
 
-Game initGameplay  (const int width,     const int      height);
+Game initGameplay  (void);
 void updateGameplay(Game &game, const int deltaTime, const unsigned input);
 
 int getScore(const Game &game);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
+/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:34:57 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/12 15:18:27 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/12 15:27:13 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ bool	display(void)
     for (int i = 0; i < bord_height; ++i)
 	bord_pattern[i] = (i % 2 == 0) ? '\\' : '/';
 
-    Game game = initGameplay(COLS, LINES - 1);
+    Game game = initGameplay();
     bool running = true;
     auto prev_frame = std::chrono::steady_clock::now();
 	while (running)
@@ -86,6 +86,10 @@ bool	display(void)
         if (!running) break;
 
         updateGameplay(game, delta, input);
+
+        if (game.lives <= 0) {
+            break;
+        };
 
         clear();
         drawHud(game);
