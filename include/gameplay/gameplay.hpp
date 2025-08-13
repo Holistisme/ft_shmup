@@ -6,7 +6,7 @@
 /*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:15:41 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 12:48:04 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 14:17:59 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,9 @@
 
 #define DODGER_INTERVAL 3000
 
+#define BOSS_DELTA    1000
+#define BOSS_INTERVAL 30000
+
 /* ************************************************************************** */
 
 /**
@@ -62,12 +65,16 @@ struct Game {
     int dodgerSpawnInterval, dodgerDelta;
 	bool wallType;
 
+    int bossSpawnInterval, bossDelta, bossShootCooldown, bossBulletDelta;
+
     Entity player;
 	Entity player2;
     std::vector<Entity> enemies;
     std::vector<Entity> fires;
     std::vector<Entity> bullets;
     std::vector<Entity> shootersBullets;
+	std::vector<Entity> bossBullets;
+    std::vector<Entity> bossSides;
     std::vector<Entity> obstacles;
     std::vector<Entity> views;
 	std::vector<Entity> walls;
@@ -149,3 +156,5 @@ void clearOutOfBoundsEntities(Game &game);
 bool enemyOnPos(const Game &game, const Vector2D &pos);
 bool enemyOnX(const Game &game, const int x, const int y);
 bool bulletOnWay(const Game &game, const Entity &enemy, const int x);
+
+void bossBattle(Game &game, const int deltaTime);

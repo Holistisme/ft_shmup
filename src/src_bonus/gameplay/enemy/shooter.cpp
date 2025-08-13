@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shooter.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 17:28:23 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 12:03:27 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/13 14:10:36 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void shootFromShooter(Game &game, const int deltaTime) {
     for (Entity &enemy : game.enemies) {
         if (enemy.kind == EntityKind::Shooter && enemy.canShoot && enemy.position.x == game.player.position.x) {
             const Vector2D shootPos = {enemy.position.x, enemy.position.y + 1};
-            game.shootersBullets.push_back({EntityKind::BulletEnemy, shootPos, 1, 0, 0, ENTITY_COLOR_YELLOW, ENTITY_SYM_BULLET_ENEMY});
+            game.shootersBullets.push_back({EntityKind::BulletEnemy, shootPos, 1, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_YELLOW, ENTITY_SYM_BULLET_ENEMY});
             enemy.canShoot = false;
         };
     };

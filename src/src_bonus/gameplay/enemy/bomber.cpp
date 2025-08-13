@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bomber.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 06:28:43 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 12:03:32 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/13 14:10:35 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void bomberExplode(Game &game, const Entity &bomber) {
     };
 
     for (const auto &pos : fireCercle) {
-        game.fires.push_back({EntityKind::Fire, pos, 100, 0, 0, ENTITY_COLOR_YELLOW, ENTITY_SYM_FIRE});
+        game.fires.push_back({EntityKind::Fire, pos, 100, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_YELLOW, ENTITY_SYM_FIRE});
     };
 };
 

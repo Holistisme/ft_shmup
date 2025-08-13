@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gameplay.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:14:40 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 12:59:48 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/13 14:33:04 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,11 @@ Game initGameplay(void) {
     game.dodgerSpawnInterval = DODGER_INTERVAL;
     game.dodgerDelta         = ENEMY_DELTA / 2;
 
+    game.bossSpawnInterval = BOSS_INTERVAL;
+    game.bossDelta         = BOSS_DELTA;
+    game.bossShootCooldown = SHOOT_COOLDOWN * 2;
+    game.bossBulletDelta   = BULLET_DELTA   * 2;
+
     game.enemies.clear();
     game.bullets.clear();
     game.views  .clear();
@@ -61,7 +66,7 @@ Game initGameplay(void) {
 
 	buildWalls(game);
 
-    game.player = {EntityKind::Player, Vector2D{COLS / 2, LINES - 3}, 100, 0, 0, ENTITY_COLOR_BLUE, ENTITY_SYM_PLAYER};
+    game.player = {EntityKind::Player, Vector2D{COLS / 2, LINES - 3}, 100, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_BLUE, ENTITY_SYM_PLAYER};
     game.pushView(game.player);
 
     return game;
@@ -101,6 +106,11 @@ void clearOutOfBoundsEntities(Game &game) {
         [&](const Entity &fire) {
             return outOfBounds(fire) || fire.health <= 0;
         }), game.fires.end());
+
+    game.bossBullets.erase(remove_if(game.bossBullets.begin(), game.bossBullets.end(),
+        [&](const Entity &bullet) {
+            return outOfBounds(bullet) || bullet.health <= 0;
+        }), game.bossBullets.end());
 };
 
 /* ************************************************************************** */
@@ -113,6 +123,9 @@ void clearOutOfBoundsEntities(Game &game) {
 void enemyDamage(Game &game) {
     for (auto &enemy : game.enemies) {
         if (enemy.position == game.player.position) {
+            if (enemy.kind == EntityKind::Boss) {
+                game.lives = 0;
+            };
             if (enemy.kind == EntityKind::Dodger) {
                 jamsGun(game);
                 enemy.health = 0;
@@ -191,11 +204,22 @@ void moveEnemies(Game &game, const int delta) {
     game.dodgerDelta -= delta;
     game.bomberDelta -= delta;
 
+    auto boss = find_if(game.enemies.begin(), game.enemies.end(),
+        [](const Entity &enemy) { return enemy.kind == EntityKind::Boss; });
+
     for (auto &enemy : game.enemies) {
         if ((game.enemyDelta <= 0
             || (enemy.kind == EntityKind::Dodger && game.dodgerDelta <= 0)
             || (enemy.kind == EntityKind::Bomber && game.bomberDelta <= 0))
             && !enemy.canShoot) {
+
+            if (boss != game.enemies.end()) {
+                if (enemy.kind != EntityKind::Boss) {
+                    enemy.position.x += enemy.manual;
+                    enemy.position.y--;
+                };
+                continue;
+            };
 
             if ((enemy.manual == 1 && !game.inBounds(Vector2D{enemy.position.x + 1, enemy.position.y}))
                 || (enemy.manual == -1 && !game.inBounds(Vector2D{enemy.position.x - 1, enemy.position.y}))) {
@@ -278,8 +302,14 @@ void moveEnemies(Game &game, const int delta) {
  * @param kind The kind of enemy to spawn.
  */
 void spawnEnemy(Game &game, const EntityKind kind) {
+    auto boss = find_if(game.enemies.begin(), game.enemies.end(),
+        [](const Entity &enemy) { return enemy.kind == EntityKind::Boss; });
+    if (boss != game.enemies.end()) {
+        return;
+    };
+
     uniform_int_distribution<int> randX(0, max(0, COLS - 2));
-    game.enemies.push_back({EntityKind::Enemy, Vector2D{randX(game.rng), 0}, 1, 0, 0, ENTITY_COLOR_RED, ENTITY_SYM_ENEMY});
+    game.enemies.push_back({EntityKind::Enemy, Vector2D{randX(game.rng), 0}, 1, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_RED, ENTITY_SYM_ENEMY});
 
     if (kind == EntityKind::Shooter) {
         promoteShooter(game.enemies.back());
@@ -312,19 +342,16 @@ void handleEnemySpawn(Game &game, const int delta) {
 
     if (game.enemySpawnInterval <= 0) {
         if (game.bomberSpawnInterval <= 0) {
-			if (game.score >= 15) {
-            	spawnEnemy(game, EntityKind::Bomber);
-			};
+            if (game.score >= 15)
+				spawnEnemy(game, EntityKind::Bomber);
             game.bomberSpawnInterval = BOMBER_INTERVAL;
         } else if (game.shooterSpawnInterval <= 0) {
-            if (game.score >= 10) {
-                spawnEnemy(game, EntityKind::Shooter);
-            };
+            if (game.score >= 10)
+				spawnEnemy(game, EntityKind::Shooter);
             game.shooterSpawnInterval = SHOOTER_INTERVAL;
         } else if (game.dodgerSpawnInterval <= 0) {
-            if (game.score >= 5) {
-                spawnEnemy(game, EntityKind::Dodger);
-            };
+            if (game.score >= 5)
+				spawnEnemy(game, EntityKind::Dodger);
             game.dodgerSpawnInterval = DODGER_INTERVAL;
         } else {
             spawnEnemy(game, EntityKind::Enemy);
@@ -363,6 +390,31 @@ void hitEntities(Game &game) {
                 bullet.health         = 0;
                 shooterBullet.health  = 0;
                 game.score           += 1;
+            };
+        };
+
+        if (game.player.position == bullet.position) {
+            bullet.health = 0;
+            continue;
+        };
+
+        for (auto &bossBullet : game.bossBullets) {
+            if (bullet.position == bossBullet.position) {
+                bullet.health = 0;
+                bossBullet.health = 0;
+                game.score += 1;
+                continue;
+            };
+        };
+
+        auto boss = find_if(game.enemies.begin(), game.enemies.end(),
+            [](const Entity &enemy) { return enemy.kind == EntityKind::Boss; });
+        for (auto &side : game.bossSides) {
+            if (bullet.position == side.position) {
+                boss->health  -= 10;
+                game.score    += 10;
+                bullet.health  = 0;
+                continue;
             };
         };
     };
@@ -412,6 +464,35 @@ void hitEntities(Game &game) {
             game.lives  = 0;
         };
     };
+
+    for (auto &bossBullet : game.bossBullets) {
+        for (auto &enemy : game.enemies) {
+            if (bossBullet.position == enemy.position && enemy.kind != EntityKind::Boss) {
+                enemy.health      = 0;
+            };
+        };
+
+        for (auto &obstacle : game.obstacles) {
+            if (bossBullet.position == obstacle.position) {
+                bossBullet.health = 0;
+                continue;
+            };
+        };
+
+        if (game.player.position == bossBullet.position) {
+            --game.lives;
+            bossBullet.health = 0;
+            continue;
+        };
+
+        for (auto &bullet : game.bullets) {
+            if (bullet.position == bossBullet.position) {
+                bossBullet.health = 0;
+                bullet.health     = 0;
+                continue;
+            };
+        };
+    };
 };
 
 /**
@@ -440,7 +521,7 @@ void moveBullets(Game &game, const int delta) {
 void shootBullet(Game &game, const Vector2D &position) {
     if (game.shootCooldown <= 0) {
         const Vector2D shootPos = {position.x, position.y - 1};
-        game.bullets.push_back({EntityKind::BulletPlayer, shootPos, 1, 0, 0, ENTITY_COLOR_GREEN, ENTITY_SYM_BULLET_PLAYER});
+        game.bullets.push_back({EntityKind::BulletPlayer, shootPos, 1, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_GREEN, ENTITY_SYM_BULLET_PLAYER});
         game.shootCooldown = SHOOT_COOLDOWN;
     };
 };
@@ -487,6 +568,8 @@ void updateGameplay(Game &game, const int deltaTime, const unsigned input) {
     spawnObstacle(game, deltaTime);
     moveObstacles(game, deltaTime);
 
+    bossBattle(game, deltaTime);
+
     clearOutOfBoundsEntities(game);
 
     game.views.clear();
@@ -507,6 +590,13 @@ void updateGameplay(Game &game, const int deltaTime, const unsigned input) {
     for (const auto &fire : game.fires) {
         game.pushView(fire);
     };
+    for (const auto &bossBullet : game.bossBullets) {
+        game.pushView(bossBullet);
+    };
+    for (const auto &bossSide : game.bossSides) {
+        game.pushView(bossSide);
+    };
+
 	for (const auto &wall : game.walls) {
 		game.pushView(wall);
 	}

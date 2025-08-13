@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dodger.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 07:06:15 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 12:03:29 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/13 13:46:16 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

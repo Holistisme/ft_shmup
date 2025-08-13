@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:34:57 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 12:48:54 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/13 14:14:25 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gameplay/gameplay.hpp"
-#include "gameplay/obstacle.hpp"
-#include "render/render.hpp"
-#include "defines.hpp"
+#include "../include/gameplay/gameplay.hpp"
+#include "../include/gameplay/obstacle.hpp"
+#include "../include/render/render.hpp"
+#include "../include/defines.hpp"
 
 // Temporary includes for testing
 #include <cstdio>

@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   obstacle.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 15:34:24 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 11:58:56 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/13 14:08:03 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gameplay/obstacle.hpp"
-#include "defines.hpp"
+#include "../../include/gameplay/obstacle.hpp"
+
+#include "../../include/defines.hpp"
 
 /* ************************************************************************** */
 
@@ -79,23 +80,23 @@ void	buildWalls(Game &game)
 	{
 		if (i % 2 == 0 && game.wallType)
 		{
-			game.walls.push_back({EntityKind::WallA, Vector2D{0, i}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_A});
-			game.walls.push_back({EntityKind::WallB, Vector2D{COLS - 1, i}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_B});
+			game.walls.push_back({EntityKind::WallA, Vector2D{0, i}, 1, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_A});
+			game.walls.push_back({EntityKind::WallB, Vector2D{COLS - 1, i}, 1, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_B});
 		}
 		else if (game.wallType)
 		{
-			game.walls.push_back({EntityKind::WallB, Vector2D{0, i}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_B});
-			game.walls.push_back({EntityKind::WallA, Vector2D{COLS - 1, i}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_A});
+			game.walls.push_back({EntityKind::WallB, Vector2D{0, i}, 1, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_B});
+			game.walls.push_back({EntityKind::WallA, Vector2D{COLS - 1, i}, 1, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_A});
 		}
 		else if (i % 2 == 0)
 		{
-			game.walls.push_back({EntityKind::WallB, Vector2D{0, i}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_B});
-			game.walls.push_back({EntityKind::WallA, Vector2D{COLS - 1, i}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_A});
+			game.walls.push_back({EntityKind::WallB, Vector2D{0, i}, 1, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_B});
+			game.walls.push_back({EntityKind::WallA, Vector2D{COLS - 1, i}, 1, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_A});
 		}
 		else
 		{
-			game.walls.push_back({EntityKind::WallA, Vector2D{0, i}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_A});
-			game.walls.push_back({EntityKind::WallB, Vector2D{COLS - 1, i}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_B});
+			game.walls.push_back({EntityKind::WallA, Vector2D{0, i}, 1, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_A});
+			game.walls.push_back({EntityKind::WallB, Vector2D{COLS - 1, i}, 1, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_B});
 		}
 	}
 	game.wallType = !game.wallType;
@@ -151,7 +152,7 @@ void spawnObstacle(Game &game, const int delta) {
         x = randX(game.rng);
     } while (obstacleOnX(game, x));
     game.obstacleSpawnInterval = OBSTACLE_SPAWN_INTERVAL;
-    game.obstacles.push_back({EntityKind::Obstacle, Vector2D{x, 1}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_OBSTACLE});
+    game.obstacles.push_back({EntityKind::Obstacle, Vector2D{x, 1}, 1, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_WHITE, ENTITY_SYM_OBSTACLE});
 };
 
 /* ************************************************************************** */
