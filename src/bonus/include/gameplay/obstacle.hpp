@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   obstacle.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 15:34:59 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 09:51:08 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/12 18:41:27 by benpicar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,10 @@
 /* ************************************************************************** */
 
 void moveObstacles(Game &game, const int delta);
+void moveObstacles2(Game &game, const int delta);
 void spawnObstacle(Game &game, const int delta);
 
 bool obstacleOnXY(const Game &game, const Vector2D &pos);
-
-void buildWalls(Game &game);
 
 bool obstacleComingOnY(const Game &game, const int y);
 bool obstacleComingOnXY(const Game &game, const int x, const int y);

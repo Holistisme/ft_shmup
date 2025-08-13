@@ -6,7 +6,7 @@
 /*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:14:40 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 09:43:22 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/13 09:51:29 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,12 @@ Game initGameplay(void) {
     game.enemies.clear();
     game.bullets.clear();
     game.views  .clear();
+	game.walls  .clear();
 
     game.obstacleDelta         = OBSTACLE_DELTA;
     game.obstacleSpawnInterval = OBSTACLE_SPAWN_INTERVAL;
+
+	buildWalls(game);
 
     game.player = {EntityKind::Player, Vector2D{COLS / 2, LINES - 3}, 100};
     game.pushView(game.player);
@@ -498,6 +501,9 @@ void updateGameplay(Game &game, const int deltaTime, const unsigned input) {
     for (const auto &fire : game.fires) {
         game.pushView(fire);
     };
+	for (const auto &wall : game.walls) {
+		game.pushView(wall);
+	}
 };
 
 /* ************************************************************************** */

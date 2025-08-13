@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   obstacle.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 15:34:24 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 09:51:37 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/12 18:41:01 by benpicar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,23 @@ using namespace std;
  * @return false If there is no obstacle coming on the X and Y coordinates.
  */
 bool obstacleComingOnXY(const Game &game, const int x, const int y) {
-    return any_of(game.obstacles.begin(), game.obstacles.end(), [x, y, &game](const Entity &obstacle) {
-        return obstacle.position.x == x
-            && obstacle.position.y >= y
-            && obstacle.position.y <= game.player.position.y;
+    return any_of(game.obstacles.begin(), game.obstacles.end(), [x, y](const Entity &obstacle) {
+        return obstacle.position.x == x && obstacle.position.y > y;
+    });
+};
+
+/**
+ * @brief
+ * @brief Check if there is an obstacle coming on the specified Y coordinate.
+ *
+ * @param game The current game state.
+ * @param y The Y coordinate to check.
+ * @return true If there is an obstacle coming on the Y coordinate.
+ * @return false If there is no obstacle coming on the Y coordinate.
+ */
+bool obstacleComingOnY(const Game &game, const int y) {
+    return any_of(game.obstacles.begin(), game.obstacles.end(), [y, &game](const Entity &obstacle) {
+        return obstacle.position.y == y && obstacle.position.x > game.player.position.x;
     });
 };
 
@@ -65,47 +78,40 @@ bool obstacleOnXY(const Game &game, const Vector2D &pos) {
     });
 };
 
-//yeah don't care about that ty
-/* 
- * @brief Build the walls of the game.
- *
- * @param game The current game state.
- */
-void	buildWalls(Game &game)
-{
-	(void)game;
-	for (auto i = 0; i < LINES; i++)
-	{
-		if (i % 2 == 0 && game.wallType)
-		{
-			game.walls.push_back({EntityKind::WallA, Vector2D{0, i}, 1});
-			game.walls.push_back({EntityKind::WallB, Vector2D{COLS - 1, i}, 1});
-		}
-		else if (game.wallType)
-		{
-			game.walls.push_back({EntityKind::WallB, Vector2D{0, i}, 1});
-			game.walls.push_back({EntityKind::WallA, Vector2D{COLS - 1, i}, 1});
-		}
-		else if (i % 2 == 0)
-		{
-			game.walls.push_back({EntityKind::WallB, Vector2D{0, i}, 1});
-			game.walls.push_back({EntityKind::WallA, Vector2D{COLS - 1, i}, 1});
-		}
-		else
-		{
-			game.walls.push_back({EntityKind::WallA, Vector2D{0, i}, 1});
-			game.walls.push_back({EntityKind::WallB, Vector2D{COLS - 1, i}, 1});
-		}
-	}
-	game.wallType = !game.wallType;
-}
-
 /**
  * @brief Move the obstacles down the screen.
  *
  * @param game The current game state.
  * @param delta The time delta since the last frame.
  */
+void moveObstacles2(Game &game, const int delta) {
+    game.obstacleDelta -= delta;
+    if (game.obstacleDelta <= 0) {
+        for (auto &obstacle : game.obstacles) {
+            obstacle.position.y++;
+            if (obstacle.position == game.player.position) {
+                --game.lives;
+                if (game.player.position.y == LINES - 2) {
+                    game.lives = 0;
+                } else {
+                    game.player.position.y++;
+                };
+				if (game.player2.position.y == LINES - 2) {
+                    game.lives = 0;
+                } else {
+                    game.player2.position.y++;
+                };
+            };
+            for (auto &enemy : game.enemies) {
+                if (obstacle.position == enemy.position) {
+                    enemy.health = 0;
+                };
+            };
+        };
+        game.obstacleDelta = max(50, OBSTACLE_DELTA - game.timeMs / 316);
+    };
+};
+
 void moveObstacles(Game &game, const int delta) {
     game.obstacleDelta -= delta;
     if (game.obstacleDelta <= 0) {
@@ -125,9 +131,7 @@ void moveObstacles(Game &game, const int delta) {
                 };
             };
         };
-		// for (auto &wall : game.walls) {
         game.obstacleDelta = max(50, OBSTACLE_DELTA - game.timeMs / 316);
-		buildWalls(game);
     };
 };
 
