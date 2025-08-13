@@ -6,11 +6,11 @@
 /*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 07:06:15 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 10:42:06 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 13:46:16 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../include/gameplay/gameplay.hpp"
+#include "gameplay/gameplay.hpp"
 
 /* ************************************************************************** */
 

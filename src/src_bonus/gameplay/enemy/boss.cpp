@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   boss.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 10:01:31 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 13:16:39 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/13 13:47:11 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../include/gameplay/gameplay.hpp"
-#include "../../../include/gameplay/obstacle.hpp"
+#include "gameplay/gameplay.hpp"
+#include "gameplay/obstacle.hpp"
 
 /* ************************************************************************** */
 

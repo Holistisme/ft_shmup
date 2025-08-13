@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   obstacle.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 15:34:24 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 13:33:59 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/13 14:35:24 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/gameplay/obstacle.hpp"
-#include "defines.hpp"
+#include "gameplay/obstacle.hpp"
 
 /* ************************************************************************** */
 
@@ -79,7 +78,6 @@ void	buildWalls(Game &game)
 	{
 		if (i % 2 == 0 && game.wallType)
 		{
-<<<<<<< HEAD:src/bonus/src/gameplay/obstacle.cpp
 			game.walls.push_back({EntityKind::WallA, Vector2D{0, i}, 1});
 			game.walls.push_back({EntityKind::WallB, Vector2D{COLS - 1, i}, 1});
 		}
@@ -97,32 +95,11 @@ void	buildWalls(Game &game)
 		{
 			game.walls.push_back({EntityKind::WallA, Vector2D{0, i}, 1});
 			game.walls.push_back({EntityKind::WallB, Vector2D{COLS - 1, i}, 1});
-=======
-			game.walls.push_back({EntityKind::WallA, Vector2D{0, i}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_A});
-			game.walls.push_back({EntityKind::WallB, Vector2D{COLS - 1, i}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_B});
-		}
-		else if (game.wallType)
-		{
-			game.walls.push_back({EntityKind::WallB, Vector2D{0, i}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_B});
-			game.walls.push_back({EntityKind::WallA, Vector2D{COLS - 1, i}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_A});
-		}
-		else if (i % 2 == 0)
-		{
-			game.walls.push_back({EntityKind::WallB, Vector2D{0, i}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_B});
-			game.walls.push_back({EntityKind::WallA, Vector2D{COLS - 1, i}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_A});
-		}
-		else
-		{
-			game.walls.push_back({EntityKind::WallA, Vector2D{0, i}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_A});
-			game.walls.push_back({EntityKind::WallB, Vector2D{COLS - 1, i}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_WALL_B});
->>>>>>> origin/main:src/bonus/src_bonus/gameplay/obstacle.cpp
 		}
 	}
 	game.wallType = !game.wallType;
 }
 
-<<<<<<< HEAD:src/bonus/src/gameplay/obstacle.cpp
-=======
 /**
  * @brief Move the obstacles down the screen.
  *
@@ -148,72 +125,6 @@ void moveObstacles(Game &game, const int delta) {
                 };
             };
         };
-		// for (auto &wall : game.walls) {
-        game.obstacleDelta = max(50, OBSTACLE_DELTA - game.timeMs / 316);
-		buildWalls(game);
-    };
-};
-
-/**
- * @brief Spawn a new obstacle.
- *
- * @param game The current game state.
- * @param delta The time delta since the last frame.
- */
-void spawnObstacle(Game &game, const int delta) {
-    game.obstacleSpawnInterval -= delta;
-
-    if ((int)game.obstacles.size() >= COLS / 3 || COLS <= 0 || LINES <= 0 || game.obstacleSpawnInterval > 0) {
-        return;
-    };
-
-    int x{0};
-    do {
-        uniform_int_distribution<int> randX(0, max(0, COLS - 1));
-        x = randX(game.rng);
-    } while (obstacleOnX(game, x));
-    game.obstacleSpawnInterval = OBSTACLE_SPAWN_INTERVAL;
-    game.obstacles.push_back({EntityKind::Obstacle, Vector2D{x, 1}, 1, 0, 0, ENTITY_COLOR_WHITE, ENTITY_SYM_OBSTACLE});
-};
->>>>>>> origin/main:src/bonus/src_bonus/gameplay/obstacle.cpp
-/**
- * @brief Move the obstacles down the screen.
- *
- * @param game The current game state.
- * @param delta The time delta since the last frame.
- */
-<<<<<<< HEAD:src/bonus/src/gameplay/obstacle.cpp
-void moveObstacles(Game &game, const int delta) {
-=======
-void moveObstacles2(Game &game, const int delta) {
->>>>>>> origin/main:src/bonus/src_bonus/gameplay/obstacle.cpp
-    game.obstacleDelta -= delta;
-    if (game.obstacleDelta <= 0) {
-        for (auto &obstacle : game.obstacles) {
-            obstacle.position.y++;
-            if (obstacle.position == game.player.position) {
-                --game.lives;
-                if (game.player.position.y == LINES - 2) {
-                    game.lives = 0;
-                } else {
-                    game.player.position.y++;
-                };
-<<<<<<< HEAD:src/bonus/src/gameplay/obstacle.cpp
-=======
-				if (game.player2.position.y == LINES - 2) {
-                    game.lives = 0;
-                } else {
-                    game.player2.position.y++;
-                };
->>>>>>> origin/main:src/bonus/src_bonus/gameplay/obstacle.cpp
-            };
-            for (auto &enemy : game.enemies) {
-                if (obstacle.position == enemy.position) {
-                    enemy.health = 0;
-                };
-            };
-        };
-<<<<<<< HEAD:src/bonus/src/gameplay/obstacle.cpp
 		// for (auto &wall : game.walls) {
         game.obstacleDelta = max(50, OBSTACLE_DELTA - game.timeMs / 316);
 		buildWalls(game);
@@ -242,10 +153,4 @@ void spawnObstacle(Game &game, const int delta) {
     game.obstacles.push_back({EntityKind::Obstacle, Vector2D{x, 1}, 1});
 };
 
-=======
-        game.obstacleDelta = max(50, OBSTACLE_DELTA - game.timeMs / 316);
-    };
-};
-
->>>>>>> origin/main:src/bonus/src_bonus/gameplay/obstacle.cpp
 /* ************************************************************************** */

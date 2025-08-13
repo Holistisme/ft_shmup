@@ -6,12 +6,12 @@
 /*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 11:22:41 by vsyutkin          #+#    #+#             */
-/*   Updated: 2025/08/13 12:49:58 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 14:33:15 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/gameplay/gameplay.hpp"
-#include "../../include/gameplay/obstacle.hpp"
+#include "gameplay/gameplay.hpp"
+#include "gameplay/obstacle.hpp"
 
 #include <climits>
 
@@ -33,7 +33,7 @@ Game initGameplay2(void) {
     game.rng = std::mt19937(std::random_device{}());
 
     game.score  = 0;
-    game.lives  = 6;
+    game.lives  = 3;
     game.timeMs = 0;
 
     game.enemyDelta         = ENEMY_DELTA;
@@ -50,6 +50,11 @@ Game initGameplay2(void) {
     game.dodgerSpawnInterval = DODGER_INTERVAL;
     game.dodgerDelta         = ENEMY_DELTA / 2;
 
+    game.bossSpawnInterval = BOSS_INTERVAL;
+    game.bossDelta         = BOSS_DELTA;
+    game.bossShootCooldown = SHOOT_COOLDOWN * 2;
+    game.bossBulletDelta   = BULLET_DELTA   * 2;
+
     game.enemies.clear();
     game.bullets.clear();
     game.views  .clear();
@@ -60,8 +65,8 @@ Game initGameplay2(void) {
 
 	buildWalls(game);
 
-    game.player = {EntityKind::Player, Vector2D{COLS / 3, LINES - 3}, 100, 0, 0, ENTITY_COLOR_BLUE, '1'};
-	game.player2 = {EntityKind::Player2, Vector2D{COLS * 2 / 3, LINES - 3}, 100, 0, 0, ENTITY_COLOR_BLUE, '2'};
+    game.player = {EntityKind::Player, Vector2D{COLS / 3, LINES - 3}, 100, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_BLUE, '1'};
+	game.player2 = {EntityKind::Player2, Vector2D{COLS * 2 / 3, LINES - 3}, 100, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_BLUE, '2'};
     game.pushView(game.player);
 	game.pushView(game.player2);
 
@@ -152,19 +157,21 @@ void updateGameplay2(Game &game, const int deltaTime, const unsigned long input)
     shootFromShooter(game, deltaTime);
 
     handleEnemySpawn(game, deltaTime);
-    moveEnemies2(game, deltaTime);
+    moveEnemies(game, deltaTime);
     hitEntities(game);
     enemyDamage(game);
 
     spawnObstacle(game, deltaTime);
     moveObstacles(game, deltaTime);
 
+    bossBattle(game, deltaTime);
+
     clearOutOfBoundsEntities(game);
 
     game.views.clear();
     game.views.reserve(1 + game.enemies.size() + game.bullets.size());
     game.pushView(game.player);
-	game.pushView(game.player2);
+    game.pushView(game.player2);
     for (const auto &enemy : game.enemies) {
         game.pushView(enemy);
     };
@@ -180,6 +187,13 @@ void updateGameplay2(Game &game, const int deltaTime, const unsigned long input)
     for (const auto &fire : game.fires) {
         game.pushView(fire);
     };
+    for (const auto &bossBullet : game.bossBullets) {
+        game.pushView(bossBullet);
+    };
+    for (const auto &bossSide : game.bossSides) {
+        game.pushView(bossSide);
+    };
+
 	for (const auto &wall : game.walls) {
 		game.pushView(wall);
 	}

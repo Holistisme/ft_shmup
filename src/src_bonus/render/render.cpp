@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   render.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 07:43:13 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 11:59:43 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/13 13:44:36 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/render/render.hpp"
+#include "render/render.hpp"
 
 /* ************************************************************************** */
 

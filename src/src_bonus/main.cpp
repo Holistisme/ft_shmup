@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:34:57 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 13:33:33 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/13 14:15:14 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/gameplay/gameplay.hpp"
-#include "../include/gameplay/obstacle.hpp"
-#include "../include/render/render.hpp"
-#include "../include/defines.hpp"
+#include "gameplay/gameplay.hpp"
+#include "gameplay/obstacle.hpp"
+#include "render/render.hpp"
+#include "defines.hpp"
 
 // Temporary includes for testing
 #include <cstdio>
@@ -207,18 +207,20 @@ static inline void	Display_menu(void)
 	int ch;
 	std::string title = "FT_SHMUP";
 	std::string opt1 = "1 Player";
+	std::string opt2 = "2 Players";
 	nodelay(stdscr, FALSE);
 	while (true)
 	{
         clear();
         mvprintw(LINES / 2 - 2, (COLS - title.size()) / 2, "%s", title.c_str());
         mvprintw(LINES / 2, (COLS - opt1.size()) / 2, "%s", opt1.c_str());
+		mvprintw(LINES / 2 + 1, (COLS - opt2.size()) / 2, "%s", opt2.c_str());
         mvprintw(LINES / 2 + 3, (COLS - 30) / 2, "Appuyez sur 1 pour commencer");
         refresh();
 		
         ch = getch();
 		mvprintw(0, 0, "ch = %d", ch);
-        if (ch == '1')
+        if (ch == '1' || ch == '2')
 			break;
 		if (ch == 'q')
 		{
@@ -230,6 +232,10 @@ static inline void	Display_menu(void)
 	if (ch == '1')
 	{
 		display();
+	}
+	else if (ch == '2')
+	{
+		display_2players();
 	}
 }
 

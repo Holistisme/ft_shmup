@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   types.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 15:11:48 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 11:49:59 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/13 14:02:10 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,11 @@ enum class EntityKind: std::uint8_t {
     Bomber,
     Fire,
     Dodger,
+    Boss,
+    BossSide,
     BulletPlayer,
     BulletEnemy,
+    BulletBoss,
     Obstacle,
 	WallA,
 	WallB,
@@ -77,6 +80,7 @@ struct Entity {
     int        health{100};
     bool       canShoot{false};
     int        manual{1};
+	Vector2D   velocity{0, 0};
 	short      color{0};
 	char	   ch{'@'};
 

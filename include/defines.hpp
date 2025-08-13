@@ -6,7 +6,7 @@
 /*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 15:14:09 by vsyutkin          #+#    #+#             */
-/*   Updated: 2025/08/13 10:49:27 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 14:01:09 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,10 @@
 #define ENTITY_SYM_OBSTACLE '#'
 #define ENTITY_SYM_BULLET_PLAYER '|'
 #define ENTITY_SYM_BULLET_ENEMY '|'
+#define ENTITY_SYM_BULLET_BOSS   '|'
 #define ENTITY_SYM_WALL_A '\\'
 #define ENTITY_SYM_WALL_B '/'
 #define ENTITY_SYM_BOMBER '*'
 #define ENTITY_SYM_DODGER '~'
 #define ENTITY_SYM_SHOOTER 'O'
-#define ENTITY_SYM_FIRE 'X'
+#define ENTITY_SYM_FIRE '&'

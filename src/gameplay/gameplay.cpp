@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gameplay.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:14:40 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 13:41:16 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/13 14:10:48 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ Game initGameplay(void) {
 
 	buildWalls(game);
 
-    game.player = {EntityKind::Player, Vector2D{COLS / 2, LINES - 3}, 100, 0, 0, ENTITY_COLOR_BLUE, ENTITY_SYM_PLAYER};
+    game.player = {EntityKind::Player, Vector2D{COLS / 2, LINES - 3}, 100, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_BLUE, ENTITY_SYM_PLAYER};
     game.pushView(game.player);
 
     return game;
@@ -280,7 +280,7 @@ void moveEnemies(Game &game, const int delta) {
  */
 void spawnEnemy(Game &game, const EntityKind kind) {
     uniform_int_distribution<int> randX(0, max(0, COLS - 2));
-    game.enemies.push_back({EntityKind::Enemy, Vector2D{randX(game.rng), 0}, 1, 0, 0, ENTITY_COLOR_RED, ENTITY_SYM_ENEMY});
+    game.enemies.push_back({EntityKind::Enemy, Vector2D{randX(game.rng), 0}, 1, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_RED, ENTITY_SYM_ENEMY});
 
     if (kind == EntityKind::Shooter) {
         promoteShooter(game.enemies.back());
@@ -435,7 +435,7 @@ void moveBullets(Game &game, const int delta) {
 void shootBullet(Game &game, const Vector2D &position) {
     if (game.shootCooldown <= 0) {
         const Vector2D shootPos = {position.x, position.y - 1};
-        game.bullets.push_back({EntityKind::BulletPlayer, shootPos, 1, 0, 0, ENTITY_COLOR_GREEN, ENTITY_SYM_BULLET_PLAYER});
+        game.bullets.push_back({EntityKind::BulletPlayer, shootPos, 1, 0, 0, Vector2D{0, 0}, ENTITY_COLOR_GREEN, ENTITY_SYM_BULLET_PLAYER});
         game.shootCooldown = SHOOT_COOLDOWN;
     };
 };

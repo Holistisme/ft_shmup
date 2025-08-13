@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+         #
+#    By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/11 14:31:53 by aheitz            #+#    #+#              #
-#    Updated: 2025/08/13 13:38:55 by aheitz           ###   ########.fr        #
+#    Updated: 2025/08/13 14:05:39 by vsyutkin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ LIBS = -lncurses
 SRC_DIR = src
 INC_DIR = include
 OBJ_DIR = obj
-SRC_DIR_BONUS = bonus/src_bonus
+SRC_DIR_BONUS = src_bonus
 
 SRC = $(SRC_DIR)/main.cpp                   \
 	$(SRC_DIR)/gameplay/gameplay.cpp        \
