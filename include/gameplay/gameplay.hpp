@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gameplay.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
+/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:15:41 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 06:14:42 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 09:50:30 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,21 @@
 /* ************************************************************************** */
 
 #define ENEMY_DELTA          200
-#define ENEMY_SPAWN_INTERVAL 500
+#define ENEMY_SPAWN_INTERVAL 1000
 
 #define SHOOT_COOLDOWN  250
 
 #define BULLET_DELTA    50
-#define BULLET_COOLDOWN 500
 
 #define ENEMY_COUNT_MAX 50
+
+#define SHOOTER_INTERVAL 5000
+#define SHOOTER_COOLDOWN 2000
+
+#define BOMBER_INTERVAL 10000
+#define FIRE_DURATION   2000
+
+#define DODGER_INTERVAL 3000
 
 /* ************************************************************************** */
 
@@ -49,11 +56,16 @@ struct Game {
     int bulletDelta, bulletCooldown;
     int shootCooldown;
 
+    int shooterSpawnInterval, shooterShootCooldown;
+    int bomberSpawnInterval, bomberDelta;
+    int dodgerSpawnInterval, dodgerDelta;
 	bool wallType;
 
     Entity player;
     std::vector<Entity> enemies;
+    std::vector<Entity> fires;
     std::vector<Entity> bullets;
+    std::vector<Entity> shootersBullets;
     std::vector<Entity> obstacles;
     std::vector<Entity> views;
 	std::vector<Entity> walls;
@@ -65,7 +77,7 @@ struct Game {
      * @return true if the position is within bounds, false otherwise.
      */
     bool inBounds(const Vector2D &pos) {
-        return pos.x >= 0 && pos.x < COLS && pos.y >= 0 && pos.y < LINES;
+        return pos.x >= 1 && pos.x <= COLS - 2 && pos.y >= 0 && pos.y <= LINES - 2;
     };
 
     /**
@@ -104,3 +116,14 @@ int getTime (const Game &game);
 const std::vector<Entity> &getViews(const Game &game);
 
 /* ************************************************************************** */
+
+void promoteShooter(Entity &enemy);
+void shootFromShooter(Game &game, const int deltaTime);
+
+void promoteBomber(Entity &enemy);
+void bomberExplode(Game &game, const Entity &bomber);
+
+bool fireComing(const Game &game, const Vector2D &pos);
+
+void promoteDodger(Entity &enemy);
+void jamsGun(Game &game);

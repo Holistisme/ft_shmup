@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   obstacle.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
+/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 15:34:24 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 06:24:25 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 09:51:37 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,23 +28,10 @@ using namespace std;
  * @return false If there is no obstacle coming on the X and Y coordinates.
  */
 bool obstacleComingOnXY(const Game &game, const int x, const int y) {
-    return any_of(game.obstacles.begin(), game.obstacles.end(), [x, y](const Entity &obstacle) {
-        return obstacle.position.x == x && obstacle.position.y > y;
-    });
-};
-
-/**
- * @brief
- * @brief Check if there is an obstacle coming on the specified Y coordinate.
- *
- * @param game The current game state.
- * @param y The Y coordinate to check.
- * @return true If there is an obstacle coming on the Y coordinate.
- * @return false If there is no obstacle coming on the Y coordinate.
- */
-bool obstacleComingOnY(const Game &game, const int y) {
-    return any_of(game.obstacles.begin(), game.obstacles.end(), [y, &game](const Entity &obstacle) {
-        return obstacle.position.y == y && obstacle.position.x > game.player.position.x;
+    return any_of(game.obstacles.begin(), game.obstacles.end(), [x, y, &game](const Entity &obstacle) {
+        return obstacle.position.x == x
+            && obstacle.position.y >= y
+            && obstacle.position.y <= game.player.position.y;
     });
 };
 

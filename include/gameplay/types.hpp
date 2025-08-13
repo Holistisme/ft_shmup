@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   types.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
+/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 15:11:48 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 05:54:03 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 09:50:47 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,10 @@ struct Vector2D {
 enum class EntityKind: std::uint8_t {
     Player,
     Enemy,
+    Shooter,
+    Bomber,
+    Fire,
+    Dodger,
     BulletPlayer,
     BulletEnemy,
     Obstacle,
@@ -70,6 +74,8 @@ struct Entity {
     EntityKind kind{};
     Vector2D   position{};
     int        health{100};
+    bool       canShoot{false};
+    int        manual{1};
 
     constexpr auto operator<=>(const Entity &other) const noexcept = default;
 };

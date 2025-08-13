@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
+/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:34:57 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 06:35:26 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 09:57:34 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,11 @@ void	init_display(void)
 	curs_set(0);
 	keypad(stdscr, TRUE);
 	start_color();
-	init_pair(1, COLOR_RED, COLOR_BLACK);
-	init_pair(2, COLOR_BLUE, COLOR_RED);
-	init_pair(3, COLOR_BLACK, COLOR_GREEN); // projectile
-    init_pair(4, COLOR_WHITE, COLOR_BLACK);
-	init_pair(5, COLOR_BLACK, COLOR_WHITE);
+	init_pair(1, COLOR_BLACK, COLOR_BLUE);
+	init_pair(2, COLOR_BLACK, COLOR_RED);
+	init_pair(3, COLOR_BLACK, COLOR_GREEN); // carré vert
+    init_pair(4, COLOR_BLACK, COLOR_WHITE);
+    init_pair(5, COLOR_BLACK, COLOR_YELLOW);
 	std::srand(std::time(nullptr));
 
     nodelay(stdscr, TRUE);
@@ -96,19 +96,23 @@ bool	display(void)
             if (x < 0 || x >= COLS || y < 1 || y >= LINES) continue;
 
             short cp = 0;
-			char sym = ' ';
+            char  ch = ' ';
             switch (e.kind) {
-                case EntityKind::Player:       cp = 1; break;
-                case EntityKind::Enemy:        cp = 2; break;
-                case EntityKind::BulletPlayer: cp = 3; sym = '|'; break;
-                case EntityKind::Obstacle:     cp = 4; break;
-				case EntityKind::WallA:        cp = 5; sym = '\\'; break;
-				case EntityKind::WallB:        cp = 5; sym = '/'; break;
-
+                case EntityKind::Player:       cp = 1; ch = '^'; break;
+                case EntityKind::Enemy:        cp = 2; ch= 'v'; break;
+                case EntityKind::BulletPlayer: cp = 3; ch= '|'; break;
+                case EntityKind::Obstacle:     cp = 4; ch= '#'; break;
+                case EntityKind::BulletEnemy:  cp = 5; ch= '|'; break;
+                case EntityKind::Shooter:      cp = 2; ch = 'O'; break;
+                case EntityKind::Bomber:       cp = 2; ch = '*'; break;
+                case EntityKind::Fire:         cp = 5; break;
+                case EntityKind::Dodger:       cp = 2; ch = '~'; break;
+                case EntityKind::WallA:        cp = 4; ch = '\\'; break;
+				case EntityKind::WallB:        cp = 4; ch = '/'; break;
                 default: break;
             };
             if (cp) attron(COLOR_PAIR(cp));
-            mvaddch(y, x, sym | A_REVERSE);
+            mvaddch(y, x, ch | A_REVERSE);
             if (cp) attroff(COLOR_PAIR(cp));
         };
 		

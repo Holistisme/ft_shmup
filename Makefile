@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+         #
+#    By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/11 14:31:53 by aheitz            #+#    #+#              #
-#    Updated: 2025/08/12 18:30:31 by benpicar         ###   ########.fr        #
+#    Updated: 2025/08/13 09:49:54 by aheitz           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,10 +21,13 @@ INC_DIR = include
 OBJ_DIR = obj
 SRC_DIR_BONUS = bonus/src
 
-SRC = $(SRC_DIR)/main.cpp            \
-	$(SRC_DIR)/gameplay/gameplay.cpp \
-	$(SRC_DIR)/render/render.cpp     \
-	$(SRC_DIR)/gameplay/obstacle.cpp \
+SRC = $(SRC_DIR)/main.cpp                   \
+	$(SRC_DIR)/gameplay/gameplay.cpp        \
+	$(SRC_DIR)/render/render.cpp            \
+	$(SRC_DIR)/gameplay/obstacle.cpp        \
+	$(SRC_DIR)/gameplay/enemy/shooter.cpp   \
+	$(SRC_DIR)/gameplay/enemy/bomber.cpp    \
+	$(SRC_DIR)/gameplay/enemy/dodger.cpp
 
 SRC_BONUS	= $(SRC_DIR)/$(SRC_DIR_BONUS)/main.cpp            \
 			  $(SRC_DIR)/$(SRC_DIR_BONUS)/gameplay/gameplay.cpp \
