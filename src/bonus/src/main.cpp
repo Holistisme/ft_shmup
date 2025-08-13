@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
+/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:34:57 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/12 18:43:15 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:48:31 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/gameplay/gameplay.hpp"
+#include "../include/gameplay/obstacle.hpp"
 #include "../include/render/render.hpp"
 #include "../include/defines.hpp"
 
@@ -36,11 +37,11 @@ void	init_display(void)
 	curs_set(0);
 	keypad(stdscr, TRUE);
 	start_color();
-	init_pair(1, COLOR_RED, COLOR_BLACK);
-	init_pair(2, COLOR_BLUE, COLOR_BLACK);
-	init_pair(3, COLOR_GREEN, COLOR_BLACK); // carré vert
-	init_pair(4, COLOR_WHITE, COLOR_BLACK);
-	init_pair(5, COLOR_YELLOW, COLOR_BLACK); // carré jaune
+	init_pair(1, COLOR_BLACK, COLOR_BLUE);
+	init_pair(2, COLOR_BLACK, COLOR_RED);
+	init_pair(3, COLOR_BLACK, COLOR_GREEN); // carré vert
+    init_pair(4, COLOR_BLACK, COLOR_WHITE);
+    init_pair(5, COLOR_BLACK, COLOR_YELLOW);
 	std::srand(std::time(nullptr));
 
     nodelay(stdscr, TRUE);
@@ -48,19 +49,11 @@ void	init_display(void)
 }
 
 //TODO: Did some things here, but not my work, please refactor this.
+// vsyutkin: I confirm this is so fkin cursed. I want to do unholy things...
 #include <thread>
 
 bool	display(void)
 {
-	auto last_scroll = std::chrono::steady_clock::now();
-	int scroll_interval = DEFAULT_SCROLL_INTERVAL; // ms
-
-    // Initialisation du motif des bords
-    const int bord_height = LINES;
-    char bord_pattern[bord_height];
-    for (int i = 0; i < bord_height; ++i)
-	bord_pattern[i] = (i % 2 == 0) ? '\\' : '/';
-
     Game game = initGameplay();
     bool running = true;
     auto prev_frame = std::chrono::steady_clock::now();
@@ -86,6 +79,8 @@ bool	display(void)
             }
         }
         if (!running) break;
+		
+		clear();
 
         updateGameplay(game, delta, input);
 
@@ -93,7 +88,6 @@ bool	display(void)
             break;
         };
 
-        clear();
         drawHud(game);
         const auto& vs = getViews(game);
         for (const auto& e : vs) {
@@ -102,131 +96,29 @@ bool	display(void)
             if (x < 0 || x >= COLS || y < 1 || y >= LINES) continue;
 
             short cp = 0;
+            char  ch = ' ';
             switch (e.kind) {
-                case EntityKind::Player:       cp = 1; break;
-                case EntityKind::Enemy:        cp = 2; break;
-                case EntityKind::BulletPlayer: cp = 3; break;
-                case EntityKind::Obstacle:     cp = 4; break;
+                case EntityKind::Player:       cp = 1; ch = '^';  break;
+                case EntityKind::Enemy:        cp = 2; ch= 'v';   break;
+                case EntityKind::BulletPlayer: cp = 3; ch= '|';   break;
+                case EntityKind::Obstacle:     cp = 4; ch= '#';   break;
+                case EntityKind::BulletEnemy:  cp = 5; ch= '|';   break;
+                case EntityKind::Shooter:      cp = 2; ch = 'O';  break;
+                case EntityKind::Bomber:       cp = 2; ch = '*';  break;
+                case EntityKind::Fire:         cp = 5; ch = '&';  break;
+                case EntityKind::Dodger:       cp = 2; ch = '~';  break;
+                case EntityKind::WallA:        cp = 4; ch = '\\'; break;
+				case EntityKind::WallB:        cp = 4; ch = '/';  break;
+                case EntityKind::BossSide:     cp = 2; ch = '+';  break;
+                case EntityKind::BulletBoss:   cp = 5; ch = '@';  break;
                 default: break;
             };
             if (cp) attron(COLOR_PAIR(cp));
-            mvaddch(y, x, ' ' | A_REVERSE);
+            mvaddch(y, x, ch | A_REVERSE);
             if (cp) attroff(COLOR_PAIR(cp));
         };
-
-        // [AFFICHAGE] Affiche les bords verticaux
-        for (int i = 0; i < LINES; ++i) {
-            mvaddch(i, 0, bord_pattern[i % bord_height]); // [AFFICHAGE] Bord gauche
-            mvaddch(i, COLS - 1, bord_pattern[i % bord_height]); // [AFFICHAGE] Bord droit
-        }
-
+		
         refresh();
-
-		if (std::chrono::duration_cast<std::chrono::milliseconds>(now - last_scroll).count() > scroll_interval) {
-            // Décale le motif vers le bas
-            char last = bord_pattern[bord_height - 1];
-            for (int i = bord_height - 1; i > 0; --i)
-                bord_pattern[i] = bord_pattern[i - 1];
-            bord_pattern[0] = last;
-            last_scroll = now;
-        }
-
-        auto end = std::chrono::steady_clock::now();
-        int used = (int)std::chrono::duration_cast<std::chrono::milliseconds>(end - now).count();
-        if (used < 16) std::this_thread::sleep_for(std::chrono::milliseconds(16 - used));
-    }
-	if (game.lives <= 0)
-	{
-		showGameOverScreen(game.score, game.timeMs / 1000.0);
-	}
-	return (false);
-}
-
-bool	display_2players(void)
-{
-	auto last_scroll = std::chrono::steady_clock::now();
-	int scroll_interval = DEFAULT_SCROLL_INTERVAL; // ms
-
-    // Initialisation du motif des bords
-    const int bord_height = LINES;
-    char bord_pattern[bord_height];
-    for (int i = 0; i < bord_height; ++i)
-	bord_pattern[i] = (i % 2 == 0) ? '\\' : '/';
-
-    Game game = initGameplay2();
-    bool running = true;
-    auto prev_frame = std::chrono::steady_clock::now();
-	while (running)
-	{
-        auto now = std::chrono::steady_clock::now();
-        int delta = (int)std::chrono::duration_cast<std::chrono::milliseconds>(now - prev_frame).count();
-        if (delta < 0)   delta = 0;
-        if (delta > 50)  delta = 50;
-        prev_frame = now;
-
-        unsigned input = 0;
-        int ch;
-        while ((ch = getch()) != ERR) {
-            switch (ch) {
-                case 'q':		running = false;		break;
-                case 'w':		input |= INPUT_W;		break;
-                case 's':		input |= INPUT_S;		break;
-                case 'a':		input |= INPUT_A;		break;
-                case 'd':		input |= INPUT_D;		break;
-				case KEY_UP:	input |= INPUT_UP;		break;
-				case KEY_DOWN:	input |= INPUT_DOWN;	break;
-				case KEY_LEFT:	input |= INPUT_LEFT;	break;
-				case KEY_RIGHT:	input |= INPUT_RIGHT;	break;
-                case ' ':		input |= INPUT_SPACE;	break;
-				case '0':		input |= INPUT_0;		break; // Player 2 shooting
-                default: break;
-            }
-        }
-        if (!running) break;
-
-        updateGameplay2(game, delta, input);
-
-        if (game.lives <= 0) {
-            break;
-        };
-
-        clear();
-        drawHud(game);
-        const auto& vs = getViews(game);
-        for (const auto& e : vs) {
-            int x = e.position.x;
-            int y = e.position.y + 1;
-            if (x < 0 || x >= COLS || y < 1 || y >= LINES) continue;
-
-            short cp = 0;
-            switch (e.kind) {
-                case EntityKind::Player:      	cp = 1; break;
-                case EntityKind::Enemy:       	cp = 2; break;
-                case EntityKind::BulletPlayer:	cp = 3; break;
-				case EntityKind::Player2:      	cp = 5; break;
-                default: break;
-            };
-            if (cp) attron(COLOR_PAIR(cp));
-            mvaddch(y, x, ' ' | A_REVERSE);
-            if (cp) attroff(COLOR_PAIR(cp));
-        };
-
-        // [AFFICHAGE] Affiche les bords verticaux
-        for (int i = 0; i < LINES; ++i) {
-            mvaddch(i, 0, bord_pattern[i % bord_height]); // [AFFICHAGE] Bord gauche
-            mvaddch(i, COLS - 1, bord_pattern[i % bord_height]); // [AFFICHAGE] Bord droit
-        }
-
-        refresh();
-
-		if (std::chrono::duration_cast<std::chrono::milliseconds>(now - last_scroll).count() > scroll_interval) {
-            // Décale le motif vers le bas
-            char last = bord_pattern[bord_height - 1];
-            for (int i = bord_height - 1; i > 0; --i)
-                bord_pattern[i] = bord_pattern[i - 1];
-            bord_pattern[0] = last;
-            last_scroll = now;
-        }
 
         auto end = std::chrono::steady_clock::now();
         int used = (int)std::chrono::duration_cast<std::chrono::milliseconds>(end - now).count();
@@ -244,20 +136,18 @@ static inline void	Display_menu(void)
 	int ch;
 	std::string title = "FT_SHMUP";
 	std::string opt1 = "1 Player";
-	std::string opt2 = "2 Players";
 	nodelay(stdscr, FALSE);
 	while (true)
 	{
         clear();
         mvprintw(LINES / 2 - 2, (COLS - title.size()) / 2, "%s", title.c_str());
         mvprintw(LINES / 2, (COLS - opt1.size()) / 2, "%s", opt1.c_str());
-        mvprintw(LINES / 2 + 1, (COLS - opt2.size()) / 2, "%s", opt2.c_str());
-        mvprintw(LINES / 2 + 3, (COLS - 30) / 2, "Appuyez sur 1 ou 2 pour commencer");
+        mvprintw(LINES / 2 + 3, (COLS - 30) / 2, "Appuyez sur 1 pour commencer");
         refresh();
 		
         ch = getch();
 		mvprintw(0, 0, "ch = %d", ch);
-        if (ch == '1' || ch == '2')
+        if (ch == '1')
 			break;
 		if (ch == 'q')
 		{
@@ -269,10 +159,6 @@ static inline void	Display_menu(void)
 	if (ch == '1')
 	{
 		display();
-	}
-	else if (ch == '2')
-	{
-		display_2players();
 	}
 }
 

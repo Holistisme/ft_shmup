@@ -6,7 +6,7 @@
 #    By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/11 14:31:53 by aheitz            #+#    #+#              #
-#    Updated: 2025/08/13 09:49:54 by aheitz           ###   ########.fr        #
+#    Updated: 2025/08/13 13:30:54 by aheitz           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,12 +27,16 @@ SRC = $(SRC_DIR)/main.cpp                   \
 	$(SRC_DIR)/gameplay/obstacle.cpp        \
 	$(SRC_DIR)/gameplay/enemy/shooter.cpp   \
 	$(SRC_DIR)/gameplay/enemy/bomber.cpp    \
-	$(SRC_DIR)/gameplay/enemy/dodger.cpp
+	$(SRC_DIR)/gameplay/enemy/dodger.cpp    \
 
 SRC_BONUS	= $(SRC_DIR)/$(SRC_DIR_BONUS)/main.cpp            \
 			  $(SRC_DIR)/$(SRC_DIR_BONUS)/gameplay/gameplay.cpp \
 			  $(SRC_DIR)/$(SRC_DIR_BONUS)/render/render.cpp     \
 			  $(SRC_DIR)/$(SRC_DIR_BONUS)/gameplay/obstacle.cpp \
+			  $(SRC_DIR)/$(SRC_DIR_BONUS)/gameplay/enemy/shooter.cpp  \
+			  $(SRC_DIR)/$(SRC_DIR_BONUS)/gameplay/enemy/bomber.cpp   \
+			  $(SRC_DIR)/$(SRC_DIR_BONUS)/gameplay/enemy/dodger.cpp   \
+			  $(SRC_DIR)/$(SRC_DIR_BONUS)/gameplay/enemy/boss.cpp     \
 
 OBJ_BONUS = $(SRC_BONUS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 

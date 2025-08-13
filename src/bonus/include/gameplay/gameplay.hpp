@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   gameplay.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
+/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:15:41 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/12 18:43:02 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:05:43 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
+/* ************************************************************************** */
 
 #include "./types.hpp"
 
@@ -22,14 +24,24 @@
 /* ************************************************************************** */
 
 #define ENEMY_DELTA          200
-#define ENEMY_SPAWN_INTERVAL 500
+#define ENEMY_SPAWN_INTERVAL 1000
 
 #define SHOOT_COOLDOWN  250
 
 #define BULLET_DELTA    50
-#define BULLET_COOLDOWN 500
 
 #define ENEMY_COUNT_MAX 50
+
+#define SHOOTER_INTERVAL 5000
+#define SHOOTER_COOLDOWN 2000
+
+#define BOMBER_INTERVAL 10000
+#define FIRE_DURATION   2000
+
+#define DODGER_INTERVAL 3000
+
+#define BOSS_DELTA    1000
+#define BOSS_INTERVAL 30000
 
 /* ************************************************************************** */
 
@@ -47,12 +59,23 @@ struct Game {
     int bulletDelta, bulletCooldown;
     int shootCooldown;
 
+    int shooterSpawnInterval, shooterShootCooldown;
+    int bomberSpawnInterval, bomberDelta;
+    int dodgerSpawnInterval, dodgerDelta;
+	bool wallType;
+
+    int bossSpawnInterval, bossDelta, bossShootCooldown, bossBulletDelta;
+
     Entity player;
-	Entity player2;
     std::vector<Entity> enemies;
+    std::vector<Entity> fires;
     std::vector<Entity> bullets;
+    std::vector<Entity> shootersBullets;
+    std::vector<Entity> bossBullets;
+    std::vector<Entity> bossSides;
     std::vector<Entity> obstacles;
     std::vector<Entity> views;
+	std::vector<Entity> walls;
 
     /**
      * @brief Checks if a position is within the game bounds.
@@ -61,7 +84,7 @@ struct Game {
      * @return true if the position is within bounds, false otherwise.
      */
     bool inBounds(const Vector2D &pos) {
-        return pos.x >= 0 && pos.x < COLS && pos.y >= 0 && pos.y < LINES;
+        return pos.x >= 1 && pos.x <= COLS - 2 && pos.y >= 0 && pos.y <= LINES - 2;
     };
 
     /**
@@ -86,19 +109,12 @@ enum : unsigned {
     INPUT_S     = 1 << 2,
     INPUT_D     = 1 << 3,
     INPUT_SPACE = 1 << 4,
-	INPUT_UP	= 1 << 5,
-	INPUT_DOWN	= 1 << 6,
-	INPUT_LEFT	= 1 << 7,
-	INPUT_RIGHT	= 1 << 8,
-	INPUT_0		= 1 << 9,
 };
 
 /* ************************************************************************** */
 
 Game initGameplay  (void);
-Game initGameplay2  (void);
 void updateGameplay(Game &game, const int deltaTime, const unsigned input);
-void updateGameplay2(Game &game, const int deltaTime, const unsigned input);
 
 int getScore(const Game &game);
 int getLives(const Game &game);
@@ -107,3 +123,16 @@ int getTime (const Game &game);
 const std::vector<Entity> &getViews(const Game &game);
 
 /* ************************************************************************** */
+
+void promoteShooter(Entity &enemy);
+void shootFromShooter(Game &game, const int deltaTime);
+
+void promoteBomber(Entity &enemy);
+void bomberExplode(Game &game, const Entity &bomber);
+
+bool fireComing(const Game &game, const Vector2D &pos);
+
+void promoteDodger(Entity &enemy);
+void jamsGun(Game &game);
+
+void bossBattle(Game &game, const int delta);
