@@ -6,7 +6,7 @@
 /*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:34:57 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 11:58:45 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:48:54 by benpicar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,13 +157,17 @@ static inline void	showGameOverScreen(int score, double elapsed_seconds)
 	while (true)
 	{
 		clear();
+		attron(COLOR_PAIR(2) | A_REVERSE);
 		mvprintw(LINES / 2 - 2, (COLS - title.size()) / 2, "%s", title.c_str());
+		attroff(COLOR_PAIR(2) | A_REVERSE);
+		attron(COLOR_PAIR(3) | A_REVERSE);
 		mvprintw(LINES / 2, (COLS - score_str.size()) / 2, "%s", score_str.c_str());
 		mvprintw(LINES / 2 + 1, (COLS - time_str.size()) / 2, "%s", time_str.c_str());
-		mvprintw(LINES / 2 + 3, (COLS - 30) / 2, "Appuyez sur une touche pour quitter");
+		mvprintw(LINES / 2 + 3, (COLS - 30) / 2, "Appuyez sur 'n' pour retourner au menu");
+		attroff(COLOR_PAIR(3) | A_REVERSE);
 		refresh();
 		ch = getch();
-		if (ch != 'q' && ch != 410)
+		if (ch == 'n')
 			break;
 		else if (ch == 'q')
 		{

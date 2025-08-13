@@ -6,7 +6,7 @@
 /*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:34:57 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 12:29:28 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:48:02 by benpicar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,30 +164,6 @@ bool	display_2players(void)
 
         clear();
         drawHud(game);
-        // const auto& vs = getViews(game);
-        // for (const auto& e : vs) {
-        //     int x = e.position.x;
-        //     int y = e.position.y + 1;
-        //     if (x < 0 || x >= COLS || y < 1 || y >= LINES) continue;
-
-        //     short cp = 0;
-        //     switch (e.kind) {
-        //         case EntityKind::Player:      	cp = 1; break;
-        //         case EntityKind::Enemy:       	cp = 2; break;
-        //         case EntityKind::BulletPlayer:	cp = 3; break;
-		// 		case EntityKind::Player2:      	cp = 5; break;
-        //         default: break;
-        //     };
-        //     if (cp) attron(COLOR_PAIR(cp));
-        //     mvaddch(y, x, ' ' | A_REVERSE);
-        //     if (cp) attroff(COLOR_PAIR(cp));
-        // };
-
-        // // [AFFICHAGE] Affiche les bords verticaux
-        // for (int i = 0; i < LINES; ++i) {
-        //     mvaddch(i, 0, bord_pattern[i % bord_height]); // [AFFICHAGE] Bord gauche
-        //     mvaddch(i, COLS - 1, bord_pattern[i % bord_height]); // [AFFICHAGE] Bord droit
-        // }
 		const auto& vs = getViews(game);
         for (const auto& e : vs) {
             int x = e.position.x;
@@ -272,13 +248,17 @@ static inline void	showGameOverScreen(int score, double elapsed_seconds)
 	while (true)
 	{
 		clear();
+		attron(COLOR_PAIR(2) | A_REVERSE);
 		mvprintw(LINES / 2 - 2, (COLS - title.size()) / 2, "%s", title.c_str());
+		attroff(COLOR_PAIR(2) | A_REVERSE);
+		attron(COLOR_PAIR(3) | A_REVERSE);
 		mvprintw(LINES / 2, (COLS - score_str.size()) / 2, "%s", score_str.c_str());
 		mvprintw(LINES / 2 + 1, (COLS - time_str.size()) / 2, "%s", time_str.c_str());
-		mvprintw(LINES / 2 + 3, (COLS - 30) / 2, "Appuyez sur une touche pour quitter");
+		mvprintw(LINES / 2 + 3, (COLS - 30) / 2, "Appuyez sur 'n' pour retourner au menu");
+		attroff(COLOR_PAIR(3) | A_REVERSE);
 		refresh();
 		ch = getch();
-		if (ch != 'q' && ch != 410)
+		if (ch == 'n')
 			break;
 		else if (ch == 'q')
 		{
