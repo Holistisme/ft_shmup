@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gameplay.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:15:41 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 11:53:19 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:48:04 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,3 +145,7 @@ void spawnEnemy(Game &game, const EntityKind kind);
 void moveEnemies(Game &game, const int delta);
 void enemyDamage(Game &game);
 void clearOutOfBoundsEntities(Game &game);
+
+bool enemyOnPos(const Game &game, const Vector2D &pos);
+bool enemyOnX(const Game &game, const int x, const int y);
+bool bulletOnWay(const Game &game, const Entity &enemy, const int x);

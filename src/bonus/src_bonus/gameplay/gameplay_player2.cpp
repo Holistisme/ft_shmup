@@ -3,17 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   gameplay_player2.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 11:22:41 by vsyutkin          #+#    #+#             */
-/*   Updated: 2025/08/13 12:12:36 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:49:58 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gameplay/gameplay.hpp"
 #include "gameplay/obstacle.hpp"
 
+#include <climits>
+
 using namespace std;
+
+void moveEnemies2(Game &game, const int delta);
+Entity nearestPlayer(Game &game, const Vector2D &pos);
 
 /**
  * @brief Initialize the game state.
@@ -147,7 +152,7 @@ void updateGameplay2(Game &game, const int deltaTime, const unsigned long input)
     shootFromShooter(game, deltaTime);
 
     handleEnemySpawn(game, deltaTime);
-    moveEnemies(game, deltaTime);
+    moveEnemies2(game, deltaTime);
     hitEntities(game);
     enemyDamage(game);
 
@@ -180,3 +185,108 @@ void updateGameplay2(Game &game, const int deltaTime, const unsigned long input)
 	}
 };
 
+/**
+ * @brief Move enemies in the game.
+ *
+ * @param game The current game state.
+ * @param delta The time elapsed since the last frame.
+ */
+void moveEnemies2(Game &game, const int delta) {
+    Vector2D newPos;
+	Entity nearest;
+    game.enemyDelta  -= delta;
+    game.dodgerDelta -= delta;
+    game.bomberDelta -= delta;
+
+    for (auto &enemy : game.enemies) {
+		nearest = nearestPlayer(game, enemy.position);
+        if ((game.enemyDelta <= 0
+            || (enemy.kind == EntityKind::Dodger && game.dodgerDelta <= 0)
+            || (enemy.kind == EntityKind::Bomber && game.bomberDelta <= 0))
+            && !enemy.canShoot) {
+
+            if ((enemy.manual == 1 && !game.inBounds(Vector2D{enemy.position.x + 1, enemy.position.y}))
+                || (enemy.manual == -1 && !game.inBounds(Vector2D{enemy.position.x - 1, enemy.position.y}))) {
+                enemy.manual = -enemy.manual;
+            };
+
+            if (fireComing(game, Vector2D{enemy.position.x, enemy.position.y})) {
+                newPos = {enemy.position.x + enemy.manual, enemy.position.y};
+
+                if (!obstacleOnXY(game, newPos) && !enemyOnPos(game, newPos)) {
+                    enemy.position = newPos;
+                };
+            } else if (obstacleComingOnXY(game, enemy.position.x, enemy.position.y)) {
+                newPos = {enemy.position.x + enemy.manual, enemy.position.y};
+
+                if (!obstacleOnXY(game, newPos) && !enemyOnPos(game, newPos)) {
+                    enemy.position = newPos;
+                };
+            } else {
+                newPos = {enemy.position.x, enemy.position.y + 1};
+
+                if (!enemyOnPos(game, newPos)) {
+                    enemy.position.y++;
+                } else {
+                    newPos = {enemy.position.x + enemy.manual, enemy.position.y};
+                    if (!enemyOnPos(game, newPos) && !obstacleOnXY(game, newPos)) {
+                        enemy.position = newPos;
+                    };
+                };
+
+                if (enemy.position.y <= nearest.position.y) {
+                    newPos = enemy.position;
+
+                    if (nearest.position.x > enemy.position.x) {
+                        newPos.x++;
+                    } else if (nearest.position.x < enemy.position.x) {
+                        newPos.x--;
+                    };
+
+                    if (!enemyOnPos(game, newPos)
+                        && !obstacleOnXY(game, newPos)
+                        && !fireComing(game, newPos)
+                        && ((!enemyOnX(game, newPos.x, newPos.y)
+                            && !bulletOnWay(game, enemy, newPos.x))
+                            || nearest.position.y == enemy.position.y)) {
+                        enemy.position = newPos;
+                    };
+                }
+
+                if (enemy.kind == EntityKind::Dodger) {
+                    if (bulletOnWay(game, enemy, enemy.position.x)) {
+                        newPos = {enemy.position.x + enemy.manual, enemy.position.y};
+
+                        if (!bulletOnWay(game, enemy, newPos.x) && !enemyOnPos(game, newPos) && !obstacleOnXY(game, newPos)) {
+                            enemy.position = newPos;
+                        };
+                    };
+                };
+            };
+        };
+    };
+
+    if (game.enemyDelta <= 0) {
+        game.enemyDelta = max(50, ENEMY_DELTA - game.timeMs / 2000);
+    };
+
+    if (game.dodgerDelta <= 0) {
+        game.dodgerDelta = max(50, ENEMY_DELTA * 2 - game.timeMs / 2000);
+    };
+
+    if (game.bomberDelta <= 0) {
+        game.bomberDelta = max(50, ENEMY_DELTA * 2 - game.timeMs / 2000);
+    };
+};
+
+Entity nearestPlayer(Game &game, const Vector2D &pos) 
+{
+	auto distPlayer1 = abs(game.player.position.x - pos.x) + abs(game.player.position.y - pos.y);
+	auto distPlayer2 = abs(game.player2.position.x - pos.x) + abs(game.player2.position.y - pos.y);
+
+	if (distPlayer1 < distPlayer2) {
+		return game.player;
+	} else {
+		return game.player2;
+	}
+}
