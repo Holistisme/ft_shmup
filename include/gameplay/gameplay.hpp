@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gameplay.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:15:41 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/12 16:41:17 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/13 06:14:42 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,14 @@ struct Game {
     int bulletDelta, bulletCooldown;
     int shootCooldown;
 
+	bool wallType;
+
     Entity player;
     std::vector<Entity> enemies;
     std::vector<Entity> bullets;
     std::vector<Entity> obstacles;
     std::vector<Entity> views;
+	std::vector<Entity> walls;
 
     /**
      * @brief Checks if a position is within the game bounds.

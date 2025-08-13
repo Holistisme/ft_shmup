@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   obstacle.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 15:34:24 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/12 16:43:59 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/13 06:24:25 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,41 @@ bool obstacleOnXY(const Game &game, const Vector2D &pos) {
     });
 };
 
+//yeah don't care about that ty
+/* 
+ * @brief Build the walls of the game.
+ *
+ * @param game The current game state.
+ */
+void	buildWalls(Game &game)
+{
+	(void)game;
+	for (auto i = 0; i < LINES; i++)
+	{
+		if (i % 2 == 0 && game.wallType)
+		{
+			game.walls.push_back({EntityKind::WallA, Vector2D{0, i}, 1});
+			game.walls.push_back({EntityKind::WallB, Vector2D{COLS - 1, i}, 1});
+		}
+		else if (game.wallType)
+		{
+			game.walls.push_back({EntityKind::WallB, Vector2D{0, i}, 1});
+			game.walls.push_back({EntityKind::WallA, Vector2D{COLS - 1, i}, 1});
+		}
+		else if (i % 2 == 0)
+		{
+			game.walls.push_back({EntityKind::WallB, Vector2D{0, i}, 1});
+			game.walls.push_back({EntityKind::WallA, Vector2D{COLS - 1, i}, 1});
+		}
+		else
+		{
+			game.walls.push_back({EntityKind::WallA, Vector2D{0, i}, 1});
+			game.walls.push_back({EntityKind::WallB, Vector2D{COLS - 1, i}, 1});
+		}
+	}
+	game.wallType = !game.wallType;
+}
+
 /**
  * @brief Move the obstacles down the screen.
  *
@@ -103,7 +138,9 @@ void moveObstacles(Game &game, const int delta) {
                 };
             };
         };
+		// for (auto &wall : game.walls) {
         game.obstacleDelta = max(50, OBSTACLE_DELTA - game.timeMs / 316);
+		buildWalls(game);
     };
 };
 

@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:34:57 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/12 18:14:42 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/13 06:25:19 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/gameplay/gameplay.hpp"
+#include "../include/gameplay/obstacle.hpp"
 #include "../include/render/render.hpp"
 #include "../include/defines.hpp"
 
@@ -47,19 +48,11 @@ void	init_display(void)
 }
 
 //TODO: Did some things here, but not my work, please refactor this.
+// vsyutkin: I confirm this is so fkin cursed. I want to do unholy things...
 #include <thread>
 
 bool	display(void)
 {
-	auto last_scroll = std::chrono::steady_clock::now();
-	int scroll_interval = DEFAULT_SCROLL_INTERVAL; // ms
-
-    // Initialisation du motif des bords
-    const int bord_height = LINES;
-    char bord_pattern[bord_height];
-    for (int i = 0; i < bord_height; ++i)
-	bord_pattern[i] = (i % 2 == 0) ? '\\' : '/';
-
     Game game = initGameplay();
     bool running = true;
     auto prev_frame = std::chrono::steady_clock::now();
@@ -85,6 +78,8 @@ bool	display(void)
             }
         }
         if (!running) break;
+		
+		clear();
 
         updateGameplay(game, delta, input);
 
@@ -92,7 +87,6 @@ bool	display(void)
             break;
         };
 
-        clear();
         drawHud(game);
         const auto& vs = getViews(game);
         for (const auto& e : vs) {
@@ -101,34 +95,23 @@ bool	display(void)
             if (x < 0 || x >= COLS || y < 1 || y >= LINES) continue;
 
             short cp = 0;
+			char sym = ' ';
             switch (e.kind) {
                 case EntityKind::Player:       cp = 1; break;
                 case EntityKind::Enemy:        cp = 2; break;
-                case EntityKind::BulletPlayer: cp = 3; break;
+                case EntityKind::BulletPlayer: cp = 3; /*sym = '|';*/ break;
                 case EntityKind::Obstacle:     cp = 4; break;
+				case EntityKind::WallA:        cp = 0; sym = '\\'; break;
+				case EntityKind::WallB:        cp = 0; sym = '/'; break;
+
                 default: break;
             };
             if (cp) attron(COLOR_PAIR(cp));
-            mvaddch(y, x, ' ' | A_REVERSE);
+            mvaddch(y, x, sym | A_REVERSE);
             if (cp) attroff(COLOR_PAIR(cp));
         };
-
-        // [AFFICHAGE] Affiche les bords verticaux
-        for (int i = 0; i < LINES; ++i) {
-            mvaddch(i, 0, bord_pattern[i % bord_height]); // [AFFICHAGE] Bord gauche
-            mvaddch(i, COLS - 1, bord_pattern[i % bord_height]); // [AFFICHAGE] Bord droit
-        }
-
+		
         refresh();
-
-		if (std::chrono::duration_cast<std::chrono::milliseconds>(now - last_scroll).count() > scroll_interval) {
-            // Décale le motif vers le bas
-            char last = bord_pattern[bord_height - 1];
-            for (int i = bord_height - 1; i > 0; --i)
-                bord_pattern[i] = bord_pattern[i - 1];
-            bord_pattern[0] = last;
-            last_scroll = now;
-        }
 
         auto end = std::chrono::steady_clock::now();
         int used = (int)std::chrono::duration_cast<std::chrono::milliseconds>(end - now).count();
