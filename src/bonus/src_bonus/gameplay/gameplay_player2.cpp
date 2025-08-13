@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gameplay/gameplay.hpp"
-#include "gameplay/obstacle.hpp"
+#include "../../include/gameplay/gameplay.hpp"
+#include "../../include/gameplay/obstacle.hpp"
 
 #include <climits>
 

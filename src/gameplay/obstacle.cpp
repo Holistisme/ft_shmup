@@ -6,12 +6,13 @@
 /*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 15:34:24 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 13:36:41 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/13 13:41:37 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "/gameplay/obstacle.hpp"
-#include "defines.hpp"
+#include "../../include/gameplay/obstacle.hpp"
+
+#include "../../include/defines.hpp"
 
 /* ************************************************************************** */
 
