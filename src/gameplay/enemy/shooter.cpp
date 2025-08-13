@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shooter.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 17:28:23 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 09:36:53 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/13 10:42:39 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ using namespace std;
 void promoteShooter(Entity &enemy) {
     enemy.kind     = EntityKind::Shooter;
     enemy.canShoot = true;
+	enemy.color   = ENTITY_COLOR_RED;
+	enemy.ch      = ENTITY_SYM_SHOOTER;
 };
 
 /**
@@ -48,7 +50,7 @@ void shootFromShooter(Game &game, const int deltaTime) {
     for (Entity &enemy : game.enemies) {
         if (enemy.kind == EntityKind::Shooter && enemy.canShoot && enemy.position.x == game.player.position.x) {
             const Vector2D shootPos = {enemy.position.x, enemy.position.y + 1};
-            game.shootersBullets.push_back({EntityKind::BulletEnemy, shootPos, 1});
+            game.shootersBullets.push_back({EntityKind::BulletEnemy, shootPos, 1, 0, 0, ENTITY_COLOR_YELLOW, ENTITY_SYM_BULLET_ENEMY});
             enemy.canShoot = false;
         };
     };
