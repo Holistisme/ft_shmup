@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+         #
+#    By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/11 14:31:53 by aheitz            #+#    #+#              #
-#    Updated: 2025/08/13 09:49:54 by aheitz           ###   ########.fr        #
+#    Updated: 2025/08/13 12:18:05 by benpicar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ LIBS = -lncurses
 SRC_DIR = src
 INC_DIR = include
 OBJ_DIR = obj
-SRC_DIR_BONUS = bonus/src
+SRC_DIR_BONUS = bonus/src_bonus
 
 SRC = $(SRC_DIR)/main.cpp                   \
 	$(SRC_DIR)/gameplay/gameplay.cpp        \
@@ -31,8 +31,12 @@ SRC = $(SRC_DIR)/main.cpp                   \
 
 SRC_BONUS	= $(SRC_DIR)/$(SRC_DIR_BONUS)/main.cpp            \
 			  $(SRC_DIR)/$(SRC_DIR_BONUS)/gameplay/gameplay.cpp \
+			  $(SRC_DIR)/$(SRC_DIR_BONUS)/gameplay/gameplay_player2.cpp \
 			  $(SRC_DIR)/$(SRC_DIR_BONUS)/render/render.cpp     \
 			  $(SRC_DIR)/$(SRC_DIR_BONUS)/gameplay/obstacle.cpp \
+			  $(SRC_DIR)/$(SRC_DIR_BONUS)/gameplay/enemy/shooter.cpp   \
+			  $(SRC_DIR)/$(SRC_DIR_BONUS)/gameplay/enemy/bomber.cpp    \
+			  $(SRC_DIR)/$(SRC_DIR_BONUS)/gameplay/enemy/dodger.cpp
 
 OBJ_BONUS = $(SRC_BONUS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 

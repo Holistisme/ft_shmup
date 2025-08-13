@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
+/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:34:57 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 10:53:35 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:48:54 by benpicar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/gameplay/gameplay.hpp"
-#include "../include/gameplay/obstacle.hpp"
-#include "../include/render/render.hpp"
-#include "../include/defines.hpp"
+#include "gameplay/gameplay.hpp"
+#include "gameplay/obstacle.hpp"
+#include "render/render.hpp"
+#include "defines.hpp"
 
 // Temporary includes for testing
 #include <cstdio>
@@ -49,7 +49,6 @@ void	init_display(void)
 }
 
 //TODO: Did some things here, but not my work, please refactor this.
-// vsyutkin: I confirm this is so fkin cursed. I want to do unholy things...
 #include <thread>
 
 bool	display(void)
@@ -158,13 +157,17 @@ static inline void	showGameOverScreen(int score, double elapsed_seconds)
 	while (true)
 	{
 		clear();
+		attron(COLOR_PAIR(2) | A_REVERSE);
 		mvprintw(LINES / 2 - 2, (COLS - title.size()) / 2, "%s", title.c_str());
+		attroff(COLOR_PAIR(2) | A_REVERSE);
+		attron(COLOR_PAIR(3) | A_REVERSE);
 		mvprintw(LINES / 2, (COLS - score_str.size()) / 2, "%s", score_str.c_str());
 		mvprintw(LINES / 2 + 1, (COLS - time_str.size()) / 2, "%s", time_str.c_str());
-		mvprintw(LINES / 2 + 3, (COLS - 30) / 2, "Appuyez sur une touche pour quitter");
+		mvprintw(LINES / 2 + 3, (COLS - 30) / 2, "Appuyez sur 'n' pour retourner au menu");
+		attroff(COLOR_PAIR(3) | A_REVERSE);
 		refresh();
 		ch = getch();
-		if (ch != 'q' && ch != 410)
+		if (ch == 'n')
 			break;
 		else if (ch == 'q')
 		{

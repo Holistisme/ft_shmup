@@ -6,7 +6,7 @@
 /*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:14:40 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 11:59:07 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:59:48 by benpicar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -312,13 +312,19 @@ void handleEnemySpawn(Game &game, const int delta) {
 
     if (game.enemySpawnInterval <= 0) {
         if (game.bomberSpawnInterval <= 0) {
-            spawnEnemy(game, EntityKind::Bomber);
+			if (game.score >= 15) {
+            	spawnEnemy(game, EntityKind::Bomber);
+			};
             game.bomberSpawnInterval = BOMBER_INTERVAL;
         } else if (game.shooterSpawnInterval <= 0) {
-            spawnEnemy(game, EntityKind::Shooter);
+            if (game.score >= 10) {
+                spawnEnemy(game, EntityKind::Shooter);
+            };
             game.shooterSpawnInterval = SHOOTER_INTERVAL;
         } else if (game.dodgerSpawnInterval <= 0) {
-            spawnEnemy(game, EntityKind::Dodger);
+            if (game.score >= 5) {
+                spawnEnemy(game, EntityKind::Dodger);
+            };
             game.dodgerSpawnInterval = DODGER_INTERVAL;
         } else {
             spawnEnemy(game, EntityKind::Enemy);

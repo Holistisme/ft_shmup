@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   types.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
+/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 15:11:48 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 10:53:21 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 11:49:59 by benpicar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ struct Vector2D {
  */
 enum class EntityKind: std::uint8_t {
     Player,
+	Player2,
     Enemy,
     Shooter,
     Bomber,
