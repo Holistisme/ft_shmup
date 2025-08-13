@@ -6,7 +6,7 @@
 /*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:34:57 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 06:25:19 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 06:35:26 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,9 @@ void	init_display(void)
 	start_color();
 	init_pair(1, COLOR_RED, COLOR_BLACK);
 	init_pair(2, COLOR_BLUE, COLOR_RED);
-	init_pair(3, COLOR_GREEN, COLOR_BLACK); // carré vert
+	init_pair(3, COLOR_BLACK, COLOR_GREEN); // projectile
     init_pair(4, COLOR_WHITE, COLOR_BLACK);
+	init_pair(5, COLOR_BLACK, COLOR_WHITE);
 	std::srand(std::time(nullptr));
 
     nodelay(stdscr, TRUE);
@@ -99,10 +100,10 @@ bool	display(void)
             switch (e.kind) {
                 case EntityKind::Player:       cp = 1; break;
                 case EntityKind::Enemy:        cp = 2; break;
-                case EntityKind::BulletPlayer: cp = 3; /*sym = '|';*/ break;
+                case EntityKind::BulletPlayer: cp = 3; sym = '|'; break;
                 case EntityKind::Obstacle:     cp = 4; break;
-				case EntityKind::WallA:        cp = 0; sym = '\\'; break;
-				case EntityKind::WallB:        cp = 0; sym = '/'; break;
+				case EntityKind::WallA:        cp = 5; sym = '\\'; break;
+				case EntityKind::WallB:        cp = 5; sym = '/'; break;
 
                 default: break;
             };
