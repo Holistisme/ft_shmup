@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gameplay.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:15:41 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 09:50:30 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/13 10:36:15 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 /* ************************************************************************** */
 
 #include "./types.hpp"
+#include "../defines.hpp"
 
 #include <algorithm>
 #include <ncurses.h>

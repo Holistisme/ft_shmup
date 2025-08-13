@@ -6,7 +6,7 @@
 /*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:34:57 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 10:15:06 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 10:53:35 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,22 +95,8 @@ bool	display(void)
             int y = e.position.y + 1;
             if (x < 0 || x >= COLS || y < 1 || y >= LINES) continue;
 
-            short cp = 0;
-            char  ch = ' ';
-            switch (e.kind) {
-                case EntityKind::Player:       cp = 1; ch = '^'; break;
-                case EntityKind::Enemy:        cp = 2; ch= 'v'; break;
-                case EntityKind::BulletPlayer: cp = 3; ch= '|'; break;
-                case EntityKind::Obstacle:     cp = 4; ch= '#'; break;
-                case EntityKind::BulletEnemy:  cp = 5; ch= '|'; break;
-                case EntityKind::Shooter:      cp = 2; ch = 'O'; break;
-                case EntityKind::Bomber:       cp = 2; ch = '*'; break;
-                case EntityKind::Fire:         cp = 5; break;
-                case EntityKind::Dodger:       cp = 2; ch = '~'; break;
-                case EntityKind::WallA:        cp = 4; ch = '\\'; break;
-				case EntityKind::WallB:        cp = 4; ch = '/'; break;
-                default: break;
-            };
+            short cp = e.color;
+            char  ch = e.ch;
             if (cp) attron(COLOR_PAIR(cp));
             mvaddch(y, x, ch | A_REVERSE);
             if (cp) attroff(COLOR_PAIR(cp));
