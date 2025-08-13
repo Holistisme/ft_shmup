@@ -6,7 +6,7 @@
 /*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:15:41 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 10:36:15 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:03:03 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ struct Game {
 	bool wallType;
 
     Entity player;
+	Entity player2;
     std::vector<Entity> enemies;
     std::vector<Entity> fires;
     std::vector<Entity> bullets;
@@ -98,17 +99,23 @@ struct Game {
  *
  */
 enum : unsigned {
-    INPUT_W     = 1 << 0,
-    INPUT_A     = 1 << 1,
-    INPUT_S     = 1 << 2,
-    INPUT_D     = 1 << 3,
-    INPUT_SPACE = 1 << 4,
+    INPUT_W     = 1,
+    INPUT_A,
+    INPUT_S     ,
+    INPUT_D     ,
+    INPUT_SPACE ,
+	INPUT_UP,
+	INPUT_DOWN,
+	INPUT_LEFT,
+	INPUT_RIGHT,
+	INPUT_0,
 };
 
 /* ************************************************************************** */
 
 Game initGameplay  (void);
 void updateGameplay(Game &game, const int deltaTime, const unsigned input);
+void updateGameplay2(Game &game, const int deltaTime, const unsigned input);
 
 int getScore(const Game &game);
 int getLives(const Game &game);
@@ -128,3 +135,10 @@ bool fireComing(const Game &game, const Vector2D &pos);
 
 void promoteDodger(Entity &enemy);
 void jamsGun(Game &game);
+
+void moveBullets(Game &game, const int delta);
+void handleEnemySpawn(Game &game, const int delta);
+void moveEnemies(Game &game, const int delta);
+void hitEntities(Game &game);
+void enemyDamage(Game &game);
+void clearOutOfBoundsEntities(Game &game);

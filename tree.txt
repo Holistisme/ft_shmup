@@ -1,0 +1,41 @@
+.
+├── include
+│   ├── defines.hpp
+│   ├── gameplay
+│   │   ├── gameplay.hpp
+│   │   ├── obstacle.hpp
+│   │   └── types.hpp
+│   └── render
+│       └── render.hpp
+├── LICENSE
+├── Makefile
+├── README.md
+├── src
+│   ├── gameplay
+│   │   ├── enemy
+│   │   │   ├── bomber.cpp
+│   │   │   ├── dodger.cpp
+│   │   │   └── shooter.cpp
+│   │   ├── gameplay.cpp
+│   │   └── obstacle.cpp
+│   ├── main.cpp
+│   └── render
+│       └── render.cpp
+├── src_bonus
+│   ├── enemy
+│   │   ├── bomber.cpp
+│   │   ├── dodger.cpp
+│   │   └── shooter.cpp
+│   ├── gameplay
+│   │   ├── gameplay.cpp
+│   │   ├── gameplay_player2.cpp
+│   │   └── obstacle.cpp
+│   ├── main.cpp
+│   ├── render
+│   │   └── render.cpp
+│   └── src
+├── subject
+│   └── subject.pdf
+└── tree.txt
+
+13 directories, 25 files
