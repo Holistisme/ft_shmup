@@ -1,30 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   obstacle.hpp                                       :+:      :+:    :+:   */
+/*   dodger.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/12 15:34:59 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 09:03:25 by aheitz           ###   ########.fr       */
+/*   Created: 2025/08/13 07:06:15 by aheitz            #+#    #+#             */
+/*   Updated: 2025/08/13 09:37:25 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "../../../include/gameplay/gameplay.hpp"
 
 /* ************************************************************************** */
 
-#include "./gameplay.hpp"
+using namespace std;
 
 /* ************************************************************************** */
 
-#define OBSTACLE_DELTA          1000
-#define OBSTACLE_SPAWN_INTERVAL 2000
+/**
+ * @brief Promote an enemy to a dodger.
+ *
+ * @param enemy The enemy entity.
+ */
+void promoteDodger(Entity &enemy) {
+    enemy.kind = EntityKind::Dodger;
+};
 
-/* ************************************************************************** */
-
-void moveObstacles(Game &game, const int delta);
-void spawnObstacle(Game &game, const int delta);
-
-bool obstacleOnXY(const Game &game, const Vector2D &pos);
-bool obstacleComingOnXY(const Game &game, const int x, const int y);
+/**
+ * @brief Jams the player's gun, preventing shooting for a period of time.
+ *
+ * @param game The current game state.
+ */
+void jamsGun(Game &game) {
+    game.shootCooldown = SHOOT_COOLDOWN * 5;
+};

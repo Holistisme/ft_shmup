@@ -6,7 +6,7 @@
 /*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 15:11:48 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/11 15:59:37 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/13 08:47:57 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,10 @@ struct Vector2D {
 enum class EntityKind: std::uint8_t {
     Player,
     Enemy,
+    Shooter,
+    Bomber,
+    Fire,
+    Dodger,
     BulletPlayer,
     BulletEnemy,
     Obstacle,
@@ -68,6 +72,8 @@ struct Entity {
     EntityKind kind{};
     Vector2D   position{};
     int        health{100};
+    bool       canShoot{false};
+    int        manual{1};
 
     constexpr auto operator<=>(const Entity &other) const noexcept = default;
 };

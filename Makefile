@@ -6,7 +6,7 @@
 #    By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/11 14:31:53 by aheitz            #+#    #+#              #
-#    Updated: 2025/08/12 15:50:06 by aheitz           ###   ########.fr        #
+#    Updated: 2025/08/13 07:15:10 by aheitz           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,10 +20,13 @@ SRC_DIR = src
 INC_DIR = include
 OBJ_DIR = obj
 
-SRC = $(SRC_DIR)/main.cpp            \
-	$(SRC_DIR)/gameplay/gameplay.cpp \
-	$(SRC_DIR)/render/render.cpp     \
-	$(SRC_DIR)/gameplay/obstacle.cpp \
+SRC = $(SRC_DIR)/main.cpp                   \
+	$(SRC_DIR)/gameplay/gameplay.cpp        \
+	$(SRC_DIR)/render/render.cpp            \
+	$(SRC_DIR)/gameplay/obstacle.cpp        \
+	$(SRC_DIR)/gameplay/enemy/shooter.cpp   \
+	$(SRC_DIR)/gameplay/enemy/bomber.cpp    \
+	$(SRC_DIR)/gameplay/enemy/dodger.cpp
 
 OBJ = $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 DEP = $(OBJ:.o=.d)
