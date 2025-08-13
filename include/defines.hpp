@@ -6,7 +6,7 @@
 /*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 15:14:09 by vsyutkin          #+#    #+#             */
-/*   Updated: 2025/08/11 19:25:55 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 10:49:27 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,3 +20,21 @@
 #define DEFAULT_ENEMY_SPAWN_INTERVAL 1000 // in ms
 
 #define MAGIC_NUMBER_DELTA_TIME 42
+
+#define ENTITY_COLOR_BLUE 1
+#define ENTITY_COLOR_RED 2
+#define ENTITY_COLOR_GREEN 3
+#define ENTITY_COLOR_WHITE 4
+#define ENTITY_COLOR_YELLOW 5
+
+#define ENTITY_SYM_PLAYER '^'
+#define ENTITY_SYM_ENEMY 'v'
+#define ENTITY_SYM_OBSTACLE '#'
+#define ENTITY_SYM_BULLET_PLAYER '|'
+#define ENTITY_SYM_BULLET_ENEMY '|'
+#define ENTITY_SYM_WALL_A '\\'
+#define ENTITY_SYM_WALL_B '/'
+#define ENTITY_SYM_BOMBER '*'
+#define ENTITY_SYM_DODGER '~'
+#define ENTITY_SYM_SHOOTER 'O'
+#define ENTITY_SYM_FIRE 'X'

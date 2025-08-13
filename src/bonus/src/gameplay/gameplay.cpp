@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gameplay.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:14:40 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/12 18:41:37 by benpicar         ###   ########.fr       */
+/*   Updated: 2025/08/13 10:38:23 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,7 @@ void spawnEnemy(Game &game) {
     };
 
     uniform_int_distribution<int> randX(0, max(0, COLS - 1));
-    game.enemies.push_back({EntityKind::Enemy, Vector2D{randX(game.rng), 1}, 1});
+    game.enemies.push_back({EntityKind::Enemy, Vector2D{randX(game.rng), 1}, 1, 0, 0, ENTITY_COLOR_RED, ENTITY_SYM_ENEMY});
 };
 
 /**

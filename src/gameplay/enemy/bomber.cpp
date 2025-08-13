@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bomber.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 06:28:43 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 09:38:09 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/13 10:42:27 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ using namespace std;
  */
 void promoteBomber(Entity &enemy) {
     enemy.kind     = EntityKind::Bomber;
+	enemy.ch       = ENTITY_SYM_BOMBER;
+	enemy.color    = ENTITY_COLOR_RED;
 };
 
 /**
@@ -49,7 +51,7 @@ void bomberExplode(Game &game, const Entity &bomber) {
     };
 
     for (const auto &pos : fireCercle) {
-        game.fires.push_back({EntityKind::Fire, pos, 100});
+        game.fires.push_back({EntityKind::Fire, pos, 100, 0, 0, ENTITY_COLOR_YELLOW, ENTITY_SYM_FIRE});
     };
 };
 
