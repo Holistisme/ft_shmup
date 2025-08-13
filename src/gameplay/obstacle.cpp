@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   obstacle.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
+/*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 15:34:24 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 10:33:31 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 13:36:41 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/gameplay/obstacle.hpp"
-#include "../../include/defines.hpp"
+#include "/gameplay/obstacle.hpp"
+#include "defines.hpp"
 
 /* ************************************************************************** */
 

@@ -6,7 +6,7 @@
 /*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:15:41 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 10:36:15 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:48:04 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ struct Game {
 	bool wallType;
 
     Entity player;
+	Entity player2;
     std::vector<Entity> enemies;
     std::vector<Entity> fires;
     std::vector<Entity> bullets;
@@ -97,18 +98,25 @@ struct Game {
  * @brief Input actions for the player
  *
  */
-enum : unsigned {
+enum : unsigned long {
     INPUT_W     = 1 << 0,
     INPUT_A     = 1 << 1,
     INPUT_S     = 1 << 2,
     INPUT_D     = 1 << 3,
     INPUT_SPACE = 1 << 4,
+	INPUT_UP    = 1 << 5,
+	INPUT_DOWN  = 1 << 6,
+	INPUT_LEFT  = 1 << 7,
+	INPUT_RIGHT = 1 << 8,
+	INPUT_0     = 1 << 9,
 };
 
 /* ************************************************************************** */
 
-Game initGameplay  (void);
+Game initGameplay	(void);
+Game initGameplay2	(void);
 void updateGameplay(Game &game, const int deltaTime, const unsigned input);
+void updateGameplay2(Game &game, const int deltaTime, const unsigned long input);
 
 int getScore(const Game &game);
 int getLives(const Game &game);
@@ -128,3 +136,16 @@ bool fireComing(const Game &game, const Vector2D &pos);
 
 void promoteDodger(Entity &enemy);
 void jamsGun(Game &game);
+
+void shootBullet(Game &game, const Vector2D &position);
+void moveBullets(Game &game, const int delta);
+void hitEntities(Game &game);
+void handleEnemySpawn(Game &game, const int delta);
+void spawnEnemy(Game &game, const EntityKind kind);
+void moveEnemies(Game &game, const int delta);
+void enemyDamage(Game &game);
+void clearOutOfBoundsEntities(Game &game);
+
+bool enemyOnPos(const Game &game, const Vector2D &pos);
+bool enemyOnX(const Game &game, const int x, const int y);
+bool bulletOnWay(const Game &game, const Entity &enemy, const int x);

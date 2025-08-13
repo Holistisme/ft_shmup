@@ -1,33 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   obstacle.hpp                                       :+:      :+:    :+:   */
+/*   dodger.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/12 15:34:59 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/12 18:41:27 by benpicar         ###   ########.fr       */
+/*   Created: 2025/08/13 07:06:15 by aheitz            #+#    #+#             */
+/*   Updated: 2025/08/13 12:03:29 by benpicar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "gameplay/gameplay.hpp"
 
 /* ************************************************************************** */
 
-#include "./gameplay.hpp"
+using namespace std;
 
 /* ************************************************************************** */
 
-#define OBSTACLE_DELTA          1000
-#define OBSTACLE_SPAWN_INTERVAL 2000
+/**
+ * @brief Promote an enemy to a dodger.
+ *
+ * @param enemy The enemy entity.
+ */
+void promoteDodger(Entity &enemy) {
+    enemy.kind = EntityKind::Dodger;
+	enemy.ch = ENTITY_SYM_DODGER;
+	enemy.color = ENTITY_COLOR_RED;
+};
 
-/* ************************************************************************** */
-
-void moveObstacles(Game &game, const int delta);
-void moveObstacles2(Game &game, const int delta);
-void spawnObstacle(Game &game, const int delta);
-
-bool obstacleOnXY(const Game &game, const Vector2D &pos);
-
-bool obstacleComingOnY(const Game &game, const int y);
-bool obstacleComingOnXY(const Game &game, const int x, const int y);
+/**
+ * @brief Jams the player's gun, preventing shooting for a period of time.
+ *
+ * @param game The current game state.
+ */
+void jamsGun(Game &game) {
+    game.shootCooldown = SHOOT_COOLDOWN * 5;
+};

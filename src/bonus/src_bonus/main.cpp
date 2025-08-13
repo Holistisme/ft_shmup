@@ -6,7 +6,7 @@
 /*   By: aheitz <aheitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:34:57 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 12:48:31 by aheitz           ###   ########.fr       */
+/*   Updated: 2025/08/13 13:33:33 by aheitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,8 @@ bool	display(void)
 		
 		clear();
 
+		erase();
+
         updateGameplay(game, delta, input);
 
         if (game.lives <= 0) {
@@ -95,30 +97,99 @@ bool	display(void)
             int y = e.position.y + 1;
             if (x < 0 || x >= COLS || y < 1 || y >= LINES) continue;
 
-            short cp = 0;
-            char  ch = ' ';
-            switch (e.kind) {
-                case EntityKind::Player:       cp = 1; ch = '^';  break;
-                case EntityKind::Enemy:        cp = 2; ch= 'v';   break;
-                case EntityKind::BulletPlayer: cp = 3; ch= '|';   break;
-                case EntityKind::Obstacle:     cp = 4; ch= '#';   break;
-                case EntityKind::BulletEnemy:  cp = 5; ch= '|';   break;
-                case EntityKind::Shooter:      cp = 2; ch = 'O';  break;
-                case EntityKind::Bomber:       cp = 2; ch = '*';  break;
-                case EntityKind::Fire:         cp = 5; ch = '&';  break;
-                case EntityKind::Dodger:       cp = 2; ch = '~';  break;
-                case EntityKind::WallA:        cp = 4; ch = '\\'; break;
-				case EntityKind::WallB:        cp = 4; ch = '/';  break;
-                case EntityKind::BossSide:     cp = 2; ch = '+';  break;
-                case EntityKind::BulletBoss:   cp = 5; ch = '@';  break;
-                default: break;
-            };
+            short cp = e.color;
+            char  ch = e.ch;
             if (cp) attron(COLOR_PAIR(cp));
             mvaddch(y, x, ch | A_REVERSE);
             if (cp) attroff(COLOR_PAIR(cp));
         };
 		
         refresh();
+
+        auto end = std::chrono::steady_clock::now();
+        int used = (int)std::chrono::duration_cast<std::chrono::milliseconds>(end - now).count();
+        if (used < 16) std::this_thread::sleep_for(std::chrono::milliseconds(16 - used));
+    }
+	if (game.lives <= 0)
+	{
+		showGameOverScreen(game.score, game.timeMs / 1000.0);
+	}
+	return (false);
+}
+
+bool	display_2players(void)
+{
+	auto last_scroll = std::chrono::steady_clock::now();
+	int scroll_interval = DEFAULT_SCROLL_INTERVAL; // ms
+
+    // Initialisation du motif des bords
+    const int bord_height = LINES;
+    char bord_pattern[bord_height];
+    for (int i = 0; i < bord_height; ++i)
+	bord_pattern[i] = (i % 2 == 0) ? '\\' : '/';
+
+    Game game = initGameplay2();
+    bool running = true;
+    auto prev_frame = std::chrono::steady_clock::now();
+	while (running)
+	{
+        auto now = std::chrono::steady_clock::now();
+        int delta = (int)std::chrono::duration_cast<std::chrono::milliseconds>(now - prev_frame).count();
+        if (delta < 0)   delta = 0;
+        if (delta > 50)  delta = 50;
+        prev_frame = now;
+
+        unsigned long input = 0;
+        int ch;
+        while ((ch = getch()) != ERR) {
+            switch (ch) {
+                case 'q':		running = false;		break;
+                case 'w':		input |= INPUT_W;		break;
+                case 's':		input |= INPUT_S;		break;
+                case 'a':		input |= INPUT_A;		break;
+                case 'd':		input |= INPUT_D;		break;
+				case KEY_UP:	input |= INPUT_UP;		break;
+				case KEY_DOWN:	input |= INPUT_DOWN;	break;
+				case KEY_LEFT:	input |= INPUT_LEFT;	break;
+				case KEY_RIGHT:	input |= INPUT_RIGHT;	break;
+                case ' ':		input |= INPUT_SPACE;	break;
+				case '0':		input |= INPUT_0;		break; // Player 2 shooting
+                default: break;
+            }
+        }
+        if (!running) break;
+
+        updateGameplay2(game, delta, input);
+
+        if (game.lives <= 0) {
+            break;
+        };
+
+        clear();
+        drawHud(game);
+		const auto& vs = getViews(game);
+        for (const auto& e : vs) {
+            int x = e.position.x;
+            int y = e.position.y + 1;
+            if (x < 0 || x >= COLS || y < 1 || y >= LINES) continue;
+
+            short cp = e.color;
+            char  ch = e.ch;
+            if (cp) attron(COLOR_PAIR(cp));
+            mvaddch(y, x, ch | A_REVERSE);
+            if (cp) attroff(COLOR_PAIR(cp));
+        };
+
+        refresh();
+
+		if (std::chrono::duration_cast<std::chrono::milliseconds>(now - last_scroll).count() > scroll_interval) {
+            // Décale le motif vers le bas
+            char last = bord_pattern[bord_height - 1];
+            for (int i = bord_height - 1; i > 0; --i)
+                bord_pattern[i] = bord_pattern[i - 1];
+            bord_pattern[0] = last;
+            last_scroll = now;
+        }
 
         auto end = std::chrono::steady_clock::now();
         int used = (int)std::chrono::duration_cast<std::chrono::milliseconds>(end - now).count();
@@ -174,13 +245,17 @@ static inline void	showGameOverScreen(int score, double elapsed_seconds)
 	while (true)
 	{
 		clear();
+		attron(COLOR_PAIR(2) | A_REVERSE);
 		mvprintw(LINES / 2 - 2, (COLS - title.size()) / 2, "%s", title.c_str());
+		attroff(COLOR_PAIR(2) | A_REVERSE);
+		attron(COLOR_PAIR(3) | A_REVERSE);
 		mvprintw(LINES / 2, (COLS - score_str.size()) / 2, "%s", score_str.c_str());
 		mvprintw(LINES / 2 + 1, (COLS - time_str.size()) / 2, "%s", time_str.c_str());
-		mvprintw(LINES / 2 + 3, (COLS - 30) / 2, "Appuyez sur une touche pour quitter");
+		mvprintw(LINES / 2 + 3, (COLS - 30) / 2, "Appuyez sur 'n' pour retourner au menu");
+		attroff(COLOR_PAIR(3) | A_REVERSE);
 		refresh();
 		ch = getch();
-		if (ch != 'q' && ch != 410)
+		if (ch == 'n')
 			break;
 		else if (ch == 'q')
 		{
