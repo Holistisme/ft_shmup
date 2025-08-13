@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   bomber.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
+/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 06:28:43 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 10:42:27 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 11:59:13 by benpicar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../include/gameplay/gameplay.hpp"
+#include "gameplay/gameplay.hpp"
 
 /* ************************************************************************** */
 

@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   gameplay.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
+/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:14:40 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 11:23:59 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:14:59 by benpicar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/gameplay/gameplay.hpp"
-#include "../../include/gameplay/obstacle.hpp"
+#include "gameplay/gameplay.hpp"
+#include "gameplay/obstacle.hpp"
 
 /* ************************************************************************** */
 

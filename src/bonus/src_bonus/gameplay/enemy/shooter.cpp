@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   shooter.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
+/*   By: benpicar <benpicar@student.42mulhouse.fr>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 17:28:23 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 10:42:39 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 12:03:27 by benpicar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../include/gameplay/gameplay.hpp"
+#include "gameplay/gameplay.hpp"
 
 /* ************************************************************************** */
 
