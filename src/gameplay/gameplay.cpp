@@ -6,7 +6,7 @@
 /*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:14:40 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 06:11:49 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 06:32:26 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ Game initGameplay(void) {
 
     game.obstacleDelta         = OBSTACLE_DELTA;
     game.obstacleSpawnInterval = OBSTACLE_SPAWN_INTERVAL;
+
+	buildWalls(game);
 
     game.player = {EntityKind::Player, Vector2D{COLS / 2, LINES - 3}, 100};
     game.pushView(game.player);
