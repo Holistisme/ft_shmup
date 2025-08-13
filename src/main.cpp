@@ -6,7 +6,7 @@
 /*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 14:34:57 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 10:53:35 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 11:08:34 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ void	init_display(void)
 }
 
 //TODO: Did some things here, but not my work, please refactor this.
-// vsyutkin: I confirm this is so fkin cursed. I want to do unholy things...
 #include <thread>
 
 bool	display(void)
