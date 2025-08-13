@@ -6,7 +6,7 @@
 /*   By: vsyutkin <vsyutkin@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 15:11:48 by aheitz            #+#    #+#             */
-/*   Updated: 2025/08/13 10:35:07 by vsyutkin         ###   ########.fr       */
+/*   Updated: 2025/08/13 10:53:21 by vsyutkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ struct Entity {
     bool       canShoot{false};
     int        manual{1};
 	short      color{0};
-	char	   ch{' '};
+	char	   ch{'@'};
 
     constexpr auto operator<=>(const Entity &other) const noexcept = default;
 };
